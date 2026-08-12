@@ -1018,7 +1018,7 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyjnUga9ScdC5stja4grF8k5u_5S9JtF8QIGNr3ExpcJ-vXisySf9ljdJE9gi48Ap6z/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxAzwqUuIUKt0fuDrYbv2bMElVTVMmT6fzs8CU2zMBHOWav-L6cw26J7Rp5HuTX-7k4tQ/exec';
 
 // رنگ‌های کارت به ترتیب پایه/کلاس
 const ACCENT_COLORS = [
@@ -1821,7 +1821,7 @@ function renderRecords() {
         ${rawAct ? `<div class="rec-action">🛠 ${escHtml(rawAct)}</div>` : ''}
         <div style="font-size:11px;color:#B0BAC9;margin-top:4px;">ثبت‌کننده: ${escHtml(r.recordedBy||'—')}</div>
       </div>
-      <button class="rec-del" title="حذف" onclick="askDelete('${r.id}')">🗑</button>
+      <button class="rec-del" title="حذف" onclick='askDelete(${JSON.stringify(r.id)})'>🗑</button>
     </div>`;
   }).join('');
 }
@@ -1908,7 +1908,7 @@ async function doDelete() {
     invalidateAllRecords();
     await loadRecords();
   } else {
-    showToast('خطا در حذف!', 'error');
+    showToast('خطا در حذف: ' + (r.message || 'نامشخص'), 'error');
   }
 }
 
