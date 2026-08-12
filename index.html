@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<title>📋 دفتر انضباطی – دبستان شهید نیاسری ۱</title>
+<style>
+  :root {
+    --sky:    #5BBAF0;
+    --mint:   #4DD6A8;
+    --lemon:  #FFD84D;
+    --coral:  #FF7B7B;
+    --violet: #9B87E8;
+    --peach:  #FFB347;
+    --white:  #FFFFFF;
+    --gray50: #F7F9FC;
+    --gray100:#EEF2F8;
+    --gray300:#B0BAC9;
+    --text:   #2D3A50;
+    --sub:    #6B7A90;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+    background: var(--gray50);
+    min-height: 100vh;
+    color: var(--text);
+    direction: rtl;
+  }
+
+  /* ===== TOP HEADER ===== */
+  .site-header {
+    background: linear-gradient(135deg, var(--violet) 0%, var(--sky) 60%, var(--mint) 100%);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(91,186,240,.35);
+  }
+  .header-inner {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-icon {
+    width: 54px; height: 54px;
+    background: rgba(255,255,255,.22);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,.35);
+  }
+  .header-text { flex: 1; }
+  .header-title {
+    font-size: 18px; font-weight: 900;
+    color: #fff;
+    line-height: 1.3;
+    text-shadow: 0 1px 3px rgba(0,0,0,.18);
+  }
+  .header-sub {
+    font-size: 12px; color: rgba(255,255,255,.85);
+    margin-top: 2px;
+  }
+  .header-back {
+    background: rgba(255,255,255,.22);
+    border: 2px solid rgba(255,255,255,.4);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background .2s;
+    white-space: nowrap;
+    display: none;
+  }
+  .header-back:hover { background: rgba(255,255,255,.35); }
+  .header-back.visible { display: block; }
+
+  /* ===== MAIN WRAP ===== */
+  .main { max-width: 820px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ===== HERO BANNER (list page) ===== */
+  .hero {
+    background: linear-gradient(120deg, #fff9e6 0%, #e8f8ff 100%);
+    border-radius: 20px;
+    padding: 22px 24px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border: 2px solid var(--lemon);
+  }
+  .hero-emoji { font-size: 48px; flex-shrink: 0; animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  .hero h2 { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .hero p  { font-size: 13px; color: var(--sub); line-height: 1.7; }
+
+  /* ===== FILTER ROW ===== */
+  .filter-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 10px;
+    margin-bottom: 18px;
+    align-items: end;
+  }
+  .filter-row input, .filter-row select {
+    width: 100%; padding: 10px 14px;
+    border: 2px solid var(--gray100);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fff;
+    color: var(--text);
+    transition: border-color .2s;
+  }
+  .filter-row input:focus, .filter-row select:focus {
+    outline: none;
+    border-color: var(--sky);
+  }
+
+  /* ===== STUDENT CARD ===== */
+  .student-grid { display: grid; gap: 12px; }
+  .student-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 12px rgba(45,58,80,.07);
+    border: 2px solid transparent;
+    transition: border-color .2s, box-shadow .2s, transform .15s;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .student-card::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: var(--card-accent, var(--sky));
+    border-radius: 0 18px 18px 0;
+  }
+  .student-card:hover {
+    border-color: var(--card-accent, var(--sky));
+    box-shadow: 0 6px 24px rgba(91,186,240,.18);
+    transform: translateY(-2px);
+  }
+  .avatar {
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    color: #fff;
+    font-weight: 900;
+    background: var(--card-accent, var(--sky));
+  }
+  .card-info { flex: 1; }
+  .card-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .card-meta { font-size: 12px; color: var(--sub); }
+  .badge-count {
+    background: var(--card-accent, var(--sky));
+    color: #fff;
+    border-radius: 30px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    display: none;
+  }
+  .badge-count.show { display: block; }
+  .badge-count.loading { background: var(--gray100); color: var(--sub); }
+  .badge-count.empty-count { background: var(--gray100); color: var(--sub); }
+  .open-btn {
+    background: none;
+    border: 2px solid var(--card-accent, var(--sky));
+    color: var(--card-accent, var(--sky));
+    border-radius: 10px;
+    padding: 7px 16px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .open-btn:hover {
+    background: var(--card-accent, var(--sky));
+    color: #fff;
+  }
+
+  /* ===== RECORD VIEW ===== */
+  .student-banner {
+    background: linear-gradient(120deg, var(--violet) 0%, var(--sky) 100%);
+    border-radius: 18px;
+    padding: 20px 22px;
+    margin-bottom: 22px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .student-banner .s-ico {
+    width: 56px; height: 56px;
+    background: rgba(255,255,255,.25);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .student-banner h2 { color:#fff; font-size:17px; font-weight:800; margin-bottom:3px; }
+  .student-banner p  { color:rgba(255,255,255,.85); font-size:13px; }
+
+  /* ===== SECTION CARDS ===== */
+  .sec-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 14px rgba(45,58,80,.07);
+    border: 2px solid var(--gray100);
+  }
+  .sec-card h3 {
+    font-size: 14px; font-weight: 800;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--text);
+  }
+  .sec-card h3 .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--violet);
+    display: inline-block;
+  }
+
+  /* ===== FORM ===== */
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-row.single { grid-template-columns: 1fr; }
+  label.fl {
+    display: block; font-size: 12px; font-weight: 700;
+    color: var(--sub); margin-bottom: 5px;
+  }
+  .inp, textarea.inp, select.inp {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid var(--gray100);
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--gray50);
+    transition: border-color .2s, background .2s;
+    resize: vertical;
+  }
+  .inp:focus, textarea.inp:focus, select.inp:focus {
+    outline: none;
+    border-color: var(--violet);
+    background: #fff;
+  }
+  .inp.date-inp { cursor: pointer; }
+
+  /* pill pills for violation types */
+  .pill-row {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;
+  }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 30px;
+    border: 2px solid var(--gray100);
+    background: var(--gray50);
+    font-size: 12px; font-weight: 600;
+    color: var(--sub);
+    cursor: pointer;
+    transition: all .18s;
+    white-space: nowrap;
+  }
+  .pill:hover  { border-color: var(--violet); color: var(--violet); background: #f3f0ff; }
+  .pill.active { border-color: var(--violet); background: var(--violet); color: #fff; }
+
+  /* type chip row */
+  .type-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .type-chip {
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 2px solid var(--gray100);
+    background: var(--gray50);
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: all .18s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .type-chip:hover { background: var(--gray100); }
+  .type-chip.sel {
+    border-color: currentColor;
+    color: #fff;
+    background: var(--chip-color, var(--violet));
+    border-color: var(--chip-color, var(--violet));
+  }
+
+  /* ===== ACTION BUTTONS ===== */
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 14px;
+    border: none;
+    font-family: inherit;
+    font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .btn:hover { transform: translateY(-2px); filter: brightness(1.07); }
+  .btn:active { transform: translateY(0); }
+  .btn-primary  { background: linear-gradient(135deg, var(--violet), var(--sky)); color:#fff; box-shadow: 0 4px 14px rgba(155,135,232,.4); }
+  .btn-success  { background: linear-gradient(135deg, var(--mint), #28b87a);       color:#fff; box-shadow: 0 4px 14px rgba(77,214,168,.35); }
+  .btn-danger   { background: linear-gradient(135deg, var(--coral), #e84a4a);      color:#fff; box-shadow: 0 4px 14px rgba(255,123,123,.35); }
+  .btn-ghost    { background: var(--gray100); color: var(--sub); }
+  .btn-print    { background: linear-gradient(135deg, var(--peach), #e8860f); color:#fff; box-shadow: 0 4px 14px rgba(255,179,71,.4); }
+  .btn-sm { padding: 8px 14px; font-size: 12px; border-radius: 10px; }
+
+  /* ===== RECORDS ===== */
+  .rec-list { display: grid; gap: 12px; margin-top: 4px; }
+  .rec-item {
+    background: var(--gray50);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+    border: 2px solid var(--gray100);
+    position: relative;
+  }
+  .rec-dot {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    background: var(--lemon);
+  }
+  .rec-body { flex: 1; }
+  .rec-head {
+    font-size: 13px; font-weight: 700;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin-bottom: 5px;
+  }
+  .rec-type-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 10px; border-radius: 20px;
+    background: var(--lemon);
+    color: var(--text);
+  }
+  .rec-date { font-size: 12px; color: var(--sub); }
+  .rec-desc { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.6; }
+  .rec-action { font-size: 12px; color: var(--sub); }
+  .rec-del {
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: var(--coral);
+    padding: 2px 4px;
+    border-radius: 6px;
+    transition: background .15s;
+    flex-shrink: 0;
+  }
+  .rec-del:hover { background: #fff0f0; }
+
+  /* ===== EMPTY STATE ===== */
+  .empty {
+    text-align: center; padding: 40px 20px; color: var(--sub);
+  }
+  .empty .e-icon { font-size: 52px; margin-bottom: 12px; }
+  .empty p { font-size: 14px; line-height: 1.7; }
+
+  /* ===== MESSAGE TOAST ===== */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--text); color: #fff;
+    padding: 12px 24px; border-radius: 30px;
+    font-size: 14px; font-weight: 600;
+    box-shadow: 0 6px 24px rgba(0,0,0,.22);
+    z-index: 999;
+    opacity: 0; pointer-events: none;
+    transition: opacity .3s;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+  .toast.success { background: var(--mint); }
+  .toast.error   { background: var(--coral); }
+
+  /* ===== DATE PICKER MODAL ===== */
+  .dp-overlay {
+    display: none; position: fixed;
+    inset: 0; background: rgba(45,58,80,.5);
+    z-index: 500;
+    align-items: center; justify-content: center;
+  }
+  .dp-overlay.open { display: flex; }
+  .dp-box {
+    background: #fff; border-radius: 22px;
+    padding: 24px; width: 340px; max-width: 94vw;
+    box-shadow: 0 16px 48px rgba(0,0,0,.22);
+  }
+  .dp-box h3 { font-size: 15px; font-weight: 800; margin-bottom: 16px; color: var(--text); }
+  .dp-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 10px; }
+  .dp-btn {
+    padding: 9px;
+    border: 2px solid var(--gray100);
+    border-radius: 10px;
+    background: var(--gray50);
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .15s; color: var(--text);
+  }
+  .dp-btn:hover { border-color: var(--violet); background: #f3f0ff; color: var(--violet); }
+  .dp-close {
+    background: none; border: none; font-size: 22px; cursor: pointer;
+    color: var(--sub); float: left; line-height: 1;
+  }
+
+  /* ===== CONFIRM MODAL ===== */
+  .confirm-overlay {
+    display: none; position: fixed;
+    inset: 0; background: rgba(45,58,80,.5);
+    z-index: 600;
+    align-items: center; justify-content: center;
+  }
+  .confirm-overlay.open { display: flex; }
+  .confirm-box {
+    background: #fff; border-radius: 22px;
+    padding: 28px 24px; width: 340px; max-width: 94vw;
+    box-shadow: 0 16px 48px rgba(0,0,0,.22);
+    text-align: center;
+  }
+  .confirm-box .c-icon { font-size: 44px; margin-bottom: 14px; }
+  .confirm-box h3 { font-size: 16px; font-weight: 800; margin-bottom: 10px; }
+  .confirm-box p  { font-size: 13px; color: var(--sub); margin-bottom: 20px; line-height: 1.7; }
+  .confirm-btn-row { display: flex; gap: 10px; justify-content: center; }
+
+  /* ===== PRINT SETTINGS MODAL ===== */
+  .ps-opt {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; padding: 14px 10px;
+    border: 2px solid var(--gray100); border-radius: 14px;
+    background: var(--gray50); cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 700;
+    color: var(--text); transition: all .15s; text-align: center;
+  }
+  .ps-opt:hover { border-color: var(--peach); }
+  .ps-opt.active { border-color: var(--peach); background: #fff6ea; color: #e8860f; }
+  .ps-opt-wide {
+    flex-direction: row; text-align: right; justify-content: flex-start;
+    padding: 12px 14px; gap: 12px;
+  }
+  .ps-opt-wide b { display: block; font-size: 13px; color: inherit; }
+  .ps-opt-wide .ps-desc { font-size: 11px; font-weight: 500; color: var(--sub); margin-top: 2px; }
+  .ps-opt.active .ps-desc { color: #b5691a; }
+
+  /* ===== PRINT AREA ===== */
+  #printArea { display: none; }
+
+  @media print {
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body > *:not(#printArea) { display: none !important; }
+    #printArea {
+      display: block !important;
+      direction: rtl;
+      font-family: Tahoma, Arial, sans-serif;
+      font-size: 11px;
+      color: #111;
+    }
+    .p-page {
+      width: 100%;
+      padding: 0;
+    }
+    /* هدر چاپ */
+    .p-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px double #555;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .p-school { font-size: 13px; font-weight: 700; color: #333; }
+    .p-title  { font-size: 16px; font-weight: 900; text-align: center; color: #000; }
+    .p-date   { font-size: 11px; color: #555; text-align: left; }
+    /* اطلاعات دانش‌آموز */
+    .p-student-bar {
+      background: #f5f5f5;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 7px 12px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 30px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .p-student-bar span { color: #333; }
+    .p-student-bar b   { color: #000; }
+    /* جدول */
+    .p-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: fixed;
+    }
+    .p-table colgroup col:nth-child(1) { width: 4%; }
+    .p-table colgroup col:nth-child(2) { width: 8%; }
+    .p-table colgroup col:nth-child(3) { width: 10%; }
+    .p-table colgroup col:nth-child(4) { width: 11%; }
+    .p-table colgroup col:nth-child(5) { width: 33%; }
+    .p-table colgroup col:nth-child(6) { width: 22%; }
+    .p-table colgroup col:nth-child(7) { width: 12%; }
+    .p-table th {
+      background: #333 !important;
+      color: #fff !important;
+      padding: 6px 5px;
+      border: 1px solid #333;
+      text-align: right;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .p-table td {
+      border: 1px solid #bbb;
+      padding: 5px 5px;
+      vertical-align: top;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+    .p-table tr:nth-child(even) td { background: #fafafa !important; }
+    .p-type-badge {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 700;
+      background: #eee;
+      color: #333;
+      white-space: nowrap;
+    }
+    /* امضا */
+    .p-footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .p-sign {
+      width: 160px;
+      text-align: center;
+      font-size: 11px;
+    }
+    .p-sign-line {
+      border-top: 1px solid #555;
+      margin-top: 28px;
+      padding-top: 4px;
+      color: #555;
+    }
+    /* آمار کوچک */
+    .p-stats {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #444;
+      border-top: 1px solid #ddd;
+      padding-top: 6px;
+    }
+    .group-student-block { margin-bottom: 20px; page-break-inside: avoid; }
+    .group-student-block h3 {
+      font-size: 12px; font-weight: 800; margin-bottom: 5px;
+      color: #222; border-right: 4px solid #333;
+      padding-right: 8px; background: #f5f5f5;
+      padding: 5px 10px; border-radius: 4px;
+    }
+    .group-print-header { text-align: center; margin-bottom: 16px; border-bottom: 3px double #555; padding-bottom: 10px; }
+    @page {
+      size: A4 landscape;
+      margin: 12mm 10mm;
+    }
+    /* حالت «پشت سر هم» — چند صفحه، تکرار هدر جدول در هر صفحه */
+    .p-page.p-flow table.p-table thead { display: table-header-group; }
+    .p-page.p-flow table.p-table tr { page-break-inside: avoid; }
+    /* حالت «پشت سر هم» در چاپ گروهی: سوابق هر دانش‌آموز از صفحهٔ جدید شروع شود */
+    .p-page.p-flow .group-student-block {
+      page-break-before: always;
+      break-before: page;
+    }
+    .p-page.p-flow .group-student-block:first-of-type {
+      page-break-before: avoid;
+      break-before: avoid;
+    }
+  }
+
+  /* ===== SELECTION MODE ===== */
+  .sel-mode .student-card { cursor: pointer; }
+  .sel-mode .student-card:hover { border-color: var(--violet) !important; }
+  .student-card.selected {
+    border-color: var(--violet) !important;
+    background: #f5f0ff !important;
+    box-shadow: 0 4px 18px rgba(155,135,232,.25) !important;
+  }
+  .s-num {
+    width: 28px; height: 28px;
+    background: var(--gray100);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 800;
+    color: var(--sub);
+    flex-shrink: 0;
+  }
+  .sel-mode .student-card .s-num { background: var(--gray100); }
+  .student-card.selected .s-num { background: var(--violet); color: #fff; }
+  .chk-ico {
+    width: 22px; height: 22px;
+    border: 2px solid var(--gray300);
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: none;
+    align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all .15s;
+  }
+  .sel-mode .chk-ico { display: flex; }
+  .student-card.selected .chk-ico { background: var(--violet); border-color: var(--violet); color: #fff; }
+
+  /* پرینت گروهی */
+  .group-print-header {
+    text-align: center;
+    margin-bottom: 18px;
+    border-bottom: 3px double #555;
+    padding-bottom: 10px;
+  }
+  .group-student-block { margin-bottom: 24px; page-break-inside: avoid; }
+  .group-student-block h3 { font-size: 13px; font-weight: 800; margin-bottom: 6px; color: #333; border-right: 4px solid #555; padding-right: 8px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 560px) {
+    .form-row { grid-template-columns: 1fr; }
+    .filter-row { grid-template-columns: 1fr 1fr; }
+    .filter-row input { grid-column: 1/-1; }
+    .hero { flex-direction: column; text-align: center; }
+  }
+
+  /* loading spinner */
+  .spin-wrap { text-align: center; padding: 40px; color: var(--sub); font-size: 14px; }
+  .spinner {
+    width: 38px; height: 38px;
+    border: 4px solid var(--gray100);
+    border-top-color: var(--violet);
+    border-radius: 50%;
+    animation: spin .9s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- ======= HEADER ======= -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-icon">📋</div>
+    <div class="header-text">
+      <div class="header-title">دفتر انضباطی</div>
+      <div class="header-sub">دبستان شهید نیاسری ۱</div>
+    </div>
+    <button class="header-back" id="btnBack" onclick="goBack()">← بازگشت</button>
+    <button onclick="openBackupPanel()" title="بکاپ کامل" style="background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.4);color:#fff;padding:8px 14px;border-radius:30px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;white-space:nowrap;">💾</button>
+  </div>
+</header>
+
+<!-- ======= MAIN ======= -->
+<main class="main">
+
+  <!-- ===== VIEW 1: STUDENT LIST ===== -->
+  <div class="view active" id="viewList">
+
+    <!-- فیلترها -->
+    <div class="filter-row" style="margin-bottom:14px;">
+      <input class="inp" type="text" id="searchInp" placeholder="🔍 جستجو نام یا نام خانوادگی..." oninput="filterList()">
+      <select class="inp" id="gradeFilter" onchange="filterList()">
+        <option value="">همه پایه‌ها</option>
+        <option value="اول">اول</option>
+        <option value="دوم">دوم</option>
+        <option value="سوم">سوم</option>
+        <option value="چهارم">چهارم</option>
+        <option value="پنجم">پنجم</option>
+        <option value="ششم">ششم</option>
+      </select>
+      <select class="inp" id="classFilter" onchange="filterList()">
+        <option value="">همه کلاس‌ها</option>
+        <option value="1">کلاس ۱</option>
+        <option value="2">کلاس ۲</option>
+        <option value="3">کلاس ۳</option>
+        <option value="4">کلاس ۴</option>
+        <option value="5">کلاس ۵</option>
+        <option value="6">کلاس ۶</option>
+      </select>
+    </div>
+
+    <!-- نوار پرینت گروهی — فقط در حالت انتخاب نمایش داده می‌شود -->
+    <div id="groupBar" style="display:none;background:linear-gradient(135deg,var(--violet),var(--sky));border-radius:16px;padding:13px 16px;margin-bottom:14px;align-items:center;gap:10px;flex-wrap:wrap;">
+      <div style="color:#fff;font-size:14px;font-weight:800;flex:1;min-width:100px;">
+        🖨️ <span id="selCount">۰</span> نفر انتخاب شده
+      </div>
+      <button onclick="selectAllVisible()" style="background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.6);color:#fff;padding:7px 14px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">انتخاب همه</button>
+      <button onclick="clearSel()" style="background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.3);color:#fff;padding:7px 14px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;">لغو</button>
+      <button onclick="printGroupRecords()" style="background:#fff;border:none;color:var(--violet);padding:8px 20px;border-radius:10px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:900;">🖨️ چاپ</button>
+      <button onclick="exitSelMode()" style="background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:20px;line-height:1;padding:0 4px;">×</button>
+    </div>
+
+    <!-- دکمه ورود به حالت انتخاب -->
+    <div id="normalBar" style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+      <button onclick="enterSelMode()" style="background:var(--gray100);border:2px solid var(--gray100);color:var(--sub);padding:8px 16px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;">🖨️ پرینت گروهی</button>
+    </div>
+
+    <div class="student-grid" id="studentGrid">
+      <div class="spin-wrap"><div class="spinner"></div>در حال بارگذاری لیست...</div>
+    </div>
+  </div>
+
+  <!-- ===== VIEW 2: RECORD VIEW ===== -->
+  <div class="view" id="viewRecord">
+
+    <!-- student banner -->
+    <div class="student-banner" id="studentBanner">
+      <div class="s-ico">🧒</div>
+      <div>
+        <h2 id="bannerName">–</h2>
+        <p id="bannerMeta">–</p>
+      </div>
+    </div>
+
+    <!-- ثبت مورد جدید -->
+    <div class="sec-card">
+      <h3><span class="dot" style="background:var(--coral)"></span>ثبت مورد جدید</h3>
+
+      <!-- row 1: date + type chips -->
+      <div class="form-row" style="margin-bottom:14px;">
+        <div>
+          <label class="fl">📅 تاریخ</label>
+          <input class="inp date-inp" type="text" id="discDate" placeholder="انتخاب تاریخ" readonly onclick="openDatePicker()">
+        </div>
+        <div>
+          <label class="fl">🏷 نوع مورد</label>
+          <select class="inp" id="discType">
+            <option value="تذکر شفاهی">⚠️ تذکر شفاهی</option>
+            <option value="تذکر کتبی">✏️ تذکر کتبی</option>
+            <option value="احضار ولی">👨‍👦 احضار ولی</option>
+            <option value="تعهد کتبی">📝 تعهد کتبی</option>
+            <option value="تعلیق">🚫 تعلیق</option>
+            <option value="تشویق">⭐ تشویق</option>
+            <option value="سایر">📌 سایر</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- violation categories as pills -->
+      <div style="margin-bottom:14px;">
+        <label class="fl">📂 موضوع تخلف (از فهرست انتخاب کنید)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;" id="violPills"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <input class="inp" type="text" id="violCustom" placeholder="موضوع دلخواه..." style="flex:1;">
+          <button class="btn btn-ghost btn-sm" onclick="addCustomViol()">➕ افزودن</button>
+        </div>
+      </div>
+
+      <!-- description -->
+      <div class="form-row single" style="margin-bottom:14px;">
+        <div>
+          <label class="fl">📝 شرح موضوع</label>
+          <textarea class="inp" id="discDesc" rows="3" placeholder="توضیح مختصر درباره اتفاق یا رفتار..."></textarea>
+        </div>
+      </div>
+
+      <!-- action pills -->
+      <div style="margin-bottom:14px;">
+        <label class="fl">🛠 اقدام انجام‌شده (از فهرست انتخاب کنید)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;" id="actionPills"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+          <input class="inp" type="text" id="actionCustom" placeholder="اقدام دلخواه..." style="flex:1;">
+          <button class="btn btn-ghost btn-sm" onclick="addCustomAction()">➕ افزودن</button>
+        </div>
+      </div>
+
+      <!-- action textarea -->
+      <div class="form-row single" style="margin-bottom:14px;">
+        <div>
+          <label class="fl">📋 متن اقدام نهایی</label>
+          <textarea class="inp" id="discAction" rows="2" placeholder="مثلاً: تذکر شفاهی داده شد و به ولی اطلاع داده شد..."></textarea>
+        </div>
+      </div>
+
+      <!-- recorded by -->
+      <div class="form-row single" style="margin-bottom:20px;">
+        <div>
+          <label class="fl">✍️ ثبت‌کننده</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select class="inp" id="discRecordedBy" style="flex:1;"></select>
+            <button class="btn btn-ghost btn-sm" onclick="openStaffMgr()" title="مدیریت ثبت‌کنندگان" style="white-space:nowrap;padding:10px 12px;">⚙️</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="discMsg"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-success" onclick="submitRecord()">✅ ثبت مورد</button>
+        <button class="btn btn-print" onclick="printRecords()">🖨️ چاپ سوابق</button>
+      </div>
+    </div>
+
+    <!-- سوابق -->
+    <div class="sec-card">
+      <h3><span class="dot" style="background:var(--sky)"></span>سوابق ثبت‌شده</h3>
+      <div class="rec-list" id="recList">
+        <div class="spin-wrap"><div class="spinner"></div>در حال بارگذاری...</div>
+      </div>
+    </div>
+
+  </div><!-- end viewRecord -->
+
+</main><!-- end main -->
+
+<!-- ======= DATE PICKER ======= -->
+<div class="dp-overlay" id="dpOverlay" onclick="if(event.target===this)closeDatePicker()">
+  <div class="dp-box">
+    <button class="dp-close" onclick="closeDatePicker()">×</button>
+    <h3>📅 انتخاب تاریخ</h3>
+    <div>
+      <label class="fl">سال</label>
+      <select class="inp" id="dpYear">
+        <option value="1403">۱۴۰۳</option>
+        <option value="1404" selected>۱۴۰۴</option>
+      </select>
+    </div>
+    <div style="margin-top:12px;">
+      <label class="fl">ماه</label>
+      <div class="dp-grid" id="dpMonthGrid"></div>
+    </div>
+    <div style="margin-top:12px;" id="dpDayWrap" class="hidden">
+      <label class="fl">روز</label>
+      <div class="dp-grid" id="dpDayGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= STAFF MANAGER ======= -->
+<div class="confirm-overlay" id="staffOverlay" onclick="if(event.target===this)closeStaffMgr()">
+  <div class="confirm-box" style="width:420px;max-width:96vw;text-align:right;max-height:92vh;overflow-y:auto;">
+
+    <!-- هدر -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:sticky;top:0;background:#fff;padding-bottom:12px;border-bottom:2px solid var(--gray100);">
+      <h3 style="margin:0;font-size:15px;">⚙️ مدیریت ثبت‌کنندگان</h3>
+      <button onclick="closeStaffMgr()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#B0BAC9;line-height:1;padding:0 4px;">×</button>
+    </div>
+
+    <!-- لیست موجود -->
+    <div id="staffList" style="margin-bottom:4px;display:grid;gap:8px;"></div>
+
+    <!-- افزودن نفر جدید -->
+    <div style="border-top:2px solid var(--gray100);padding-top:16px;margin-top:12px;">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">➕ افزودن ثبت‌کننده جدید</div>
+
+      <!-- سمت: انتخاب یا تایپ -->
+      <label class="fl">سمت</label>
+      <div style="display:flex;gap:8px;margin-top:5px;margin-bottom:10px;">
+        <select class="inp" id="newStaffRoleSel" style="font-size:13px;flex:1;" onchange="syncRoleInput()">
+          <option value="">— انتخاب سمت —</option>
+          <option value="مدیر مدرسه">مدیر مدرسه</option>
+          <option value="معاون آموزشی">معاون آموزشی</option>
+          <option value="معاون اجرایی">معاون اجرایی</option>
+          <option value="مشاور">مشاور</option>
+          <option value="معلم">معلم</option>
+          <option value="سرایدار">سرایدار</option>
+          <option value="__custom__">✏️ سمت جدید (تایپ کنید)</option>
+        </select>
+        <input class="inp" id="newStaffRoleCustom" placeholder="سمت جدید..." style="font-size:13px;flex:1;display:none;">
+      </div>
+
+      <!-- نام -->
+      <label class="fl">نام و نام‌خانوادگی</label>
+      <input class="inp" type="text" id="newStaffName" placeholder="مثلاً: علی محمدی" style="font-size:13px;margin-top:5px;">
+
+      <button class="btn btn-success" style="width:100%;margin-top:12px;justify-content:center;" onclick="addStaff()">✅ افزودن</button>
+    </div>
+
+    <!-- بکاپ و بازیابی -->
+    <div style="border-top:2px solid var(--gray100);padding-top:16px;margin-top:12px;">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px;">💾 پشتیبان‌گیری و بازیابی</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <button class="btn btn-primary btn-sm" style="justify-content:center;" onclick="backupStaff()">📥 دانلود</button>
+        <button class="btn btn-ghost btn-sm" style="justify-content:center;position:relative;overflow:hidden;">
+          📤 بازیابی
+          <input type="file" accept=".json" onchange="restoreStaff(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+        </button>
+        <button class="btn btn-ghost btn-sm" style="justify-content:center;color:var(--coral);border:2px solid var(--coral);" onclick="resetStaff()">🔄 ریست</button>
+      </div>
+      <div id="backupMsg" style="margin-top:8px;font-size:12px;color:var(--mint);min-height:18px;text-align:center;"></div>
+    </div>
+
+  </div>
+</div>
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="c-icon">🗑️</div>
+    <h3>حذف این مورد؟</h3>
+    <p>آیا مطمئن هستید که می‌خواهید این سابقه را حذف کنید؟ این عمل قابل بازگشت نیست.</p>
+    <div class="confirm-btn-row">
+      <button class="btn btn-danger btn-sm" onclick="doDelete()">بله، حذف شود</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeConfirm()">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= FULL BACKUP PANEL ======= -->
+<div class="confirm-overlay" id="backupOverlay" onclick="if(event.target===this)closeBackupPanel()">
+  <div class="confirm-box" style="width:420px;max-width:96vw;text-align:right;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 style="margin:0;font-size:15px;">💾 بکاپ و بازیابی کامل</h3>
+      <button onclick="closeBackupPanel()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#B0BAC9;line-height:1;padding:0 4px;">×</button>
+    </div>
+
+    <!-- بکاپ کامل -->
+    <div style="background:linear-gradient(120deg,#f0ecff,#e8f8ff);border-radius:14px;padding:16px;margin-bottom:14px;border:2px solid var(--violet)20;">
+      <div style="font-size:13px;font-weight:800;color:var(--violet);margin-bottom:6px;">📥 دانلود بکاپ کامل</div>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.7;">شامل تمام سوابق انضباطی همه دانش‌آموزان + لیست ثبت‌کنندگان</div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="doFullBackup()">
+        <span id="backupBtnTxt">📥 دریافت بکاپ کامل</span>
+      </button>
+      <div id="backupProgress" style="margin-top:10px;font-size:12px;color:var(--sub);text-align:center;min-height:18px;"></div>
+    </div>
+
+    <!-- بازیابی -->
+    <div style="background:#fff5f5;border-radius:14px;padding:16px;margin-bottom:14px;border:2px solid var(--coral)30;">
+      <div style="font-size:13px;font-weight:800;color:var(--coral);margin-bottom:6px;">📤 بازیابی از فایل بکاپ</div>
+      <div style="font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.7;">فایل JSON بکاپ قبلی را انتخاب کنید. اطلاعات ثبت‌کنندگان بازیابی می‌شود.</div>
+      <button class="btn btn-ghost" style="width:100%;justify-content:center;position:relative;overflow:hidden;border:2px solid var(--coral);color:var(--coral);">
+        📤 انتخاب فایل بکاپ
+        <input type="file" accept=".json" onchange="doFullRestore(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+      </button>
+    </div>
+
+    <!-- نکته -->
+    <div style="font-size:11px;color:var(--sub);background:var(--gray50);border-radius:10px;padding:10px 12px;line-height:1.8;">
+      ⚠️ سوابق انضباطی در Google Sheets ذخیره هستند و نیاز به بازیابی دستی ندارند.<br>
+      بکاپ JSON برای حفظ اطلاعات ثبت‌کنندگان و یک نسخه آفلاین از سوابق است.
+    </div>
+
+    <div id="restoreMsg" style="margin-top:10px;font-size:13px;text-align:center;min-height:20px;font-weight:600;"></div>
+  </div>
+</div>
+
+<!-- ======= PRINT SETTINGS MODAL ======= -->
+<div class="confirm-overlay" id="printSettingsOverlay" onclick="if(event.target===this)closePrintSettings()">
+  <div class="confirm-box" style="width:380px;max-width:94vw;text-align:right;">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+      <h3 style="margin:0;font-size:15px;">🖨️ تنظیمات چاپ</h3>
+      <button onclick="closePrintSettings()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#B0BAC9;line-height:1;padding:0 4px;">×</button>
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label class="fl" style="margin-bottom:8px;">جهت صفحه</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <button type="button" class="ps-opt" id="psOrientLandscape" onclick="setPrintOrient('landscape')">
+          <span style="font-size:22px;">🖼️</span><span>افقی</span>
+        </button>
+        <button type="button" class="ps-opt" id="psOrientPortrait" onclick="setPrintOrient('portrait')">
+          <span style="font-size:22px;">📄</span><span>عمودی</span>
+        </button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:20px;">
+      <label class="fl" style="margin-bottom:8px;">چیدمان سوابق</label>
+      <div style="display:grid;gap:10px;">
+        <button type="button" class="ps-opt ps-opt-wide" id="psModeFit" onclick="setPrintMode('fit')">
+          <span style="font-size:18px;">📑</span>
+          <span>
+            <b>در یک صفحه</b>
+            <div class="ps-desc">همه سوابق فشرده می‌شوند تا در یک برگه جا شوند</div>
+          </span>
+        </button>
+        <button type="button" class="ps-opt ps-opt-wide" id="psModeFlow" onclick="setPrintMode('flow')">
+          <span style="font-size:18px;">📚</span>
+          <span>
+            <b>پشت سر هم (چند صفحه)</b>
+            <div class="ps-desc">در صورت نیاز، در چند برگه پشت سرهم چاپ می‌شود</div>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="confirm-btn-row">
+      <button class="btn btn-print btn-sm" style="flex:1;justify-content:center;" onclick="confirmPrintSettings()">🖨️ چاپ</button>
+      <button class="btn btn-ghost btn-sm" onclick="closePrintSettings()">انصراف</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======= TOAST ======= -->
+<div class="toast" id="toast"></div>
+
+<!-- ======= PRINT AREA ======= -->
+<div id="printArea"></div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyjnUga9ScdC5stja4grF8k5u_5S9JtF8QIGNr3ExpcJ-vXisySf9ljdJE9gi48Ap6z/exec';
+
+// رنگ‌های کارت به ترتیب پایه/کلاس
+const ACCENT_COLORS = [
+  '#5BBAF0','#4DD6A8','#FFD84D','#FF7B7B','#9B87E8','#FFB347',
+  '#5BC8F5','#70D97A','#FFC875','#F97FB3','#A78BFA','#FFA07A'
+];
+
+// ============================================================
+// DATA
+// ============================================================
+let allStudents = [];
+let currentStudent = null;
+let currentRecords = [];
+let pendingDeleteId = null;
+let dpSelectedMonth = null;
+
+// violation pills
+const VIOLATION_PILLS = [
+  {label:'👻 غیبت غیرموجه',  val:'غیبت غیرموجه'},
+  {label:'⏰ تأخیر ورود',     val:'تأخیر ورود به مدرسه'},
+  {label:'🚪 خروج بدون اجازه',val:'خروج بدون اجازه'},
+  {label:'📢 بی‌نظمی کلاس',  val:'ایجاد بی‌نظمی در کلاس یا حیاط'},
+  {label:'✏️ تکلیف نداشتن',  val:'انجام ندادن تکالیف'},
+  {label:'👊 درگیری',         val:'درگیری یا کتک‌کاری'},
+  {label:'😡 بی‌احترامی',     val:'بی‌احترامی در مدرسه'},
+  {label:'🗣 الفاظ نامناسب', val:'استفاده از الفاظ نامناسب'},
+  {label:'🤥 دروغ‌گویی',     val:'دروغ‌گویی یا نسبت دادن مطالب نادرست'},
+  {label:'🧹 کثیف کردن',     val:'ریختن و کثیف کردن محیط'},
+  {label:'💔 آسیب به اموال', val:'آسیب به دیوار، در، پنجره و تجهیزات'},
+  {label:'📵 تلفن همراه',    val:'استفاده غیرمجاز از تلفن همراه'},
+];
+
+// action pills
+const ACTION_PILLS = [
+  {label:'💬 تذکر شفاهی',      val:'تذکر شفاهی و یادآوری قوانین مدرسه'},
+  {label:'📞 تماس با ولی',     val:'تماس تلفنی با ولی دانش‌آموز'},
+  {label:'👨‍👦 دعوت ولی',      val:'دعوت ولی به مدرسه'},
+  {label:'📝 تذکر کتبی',       val:'تذکر کتبی در پرونده انضباطی'},
+  {label:'🙏 عذرخواهی',        val:'عذرخواهی از فرد آسیب‌دیده'},
+  {label:'🔄 پیگیری رفتار',   val:'تحت نظر قرار دادن رفتار دانش‌آموز برای مدت مشخص'},
+  {label:'📋 جلسه با ولی',    val:'برگزاری جلسه با ولی و دانش‌آموز'},
+  {label:'🏫 ارجاع مدیر',      val:'ارجاع موضوع به مدیر مدرسه'},
+  {label:'⭐ تقدیر پس از اصلاح',val:'تقدیر از دانش‌آموز پس از مشاهده اصلاح رفتار'},
+];
+
+// ============================================================
+// STAFF — ثبت‌کنندگان
+// ============================================================
+const DEFAULT_STAFF = [
+  { role: 'مدیر مدرسه',   name: 'محمد حیدری' },
+  { role: 'معاون آموزشی', name: 'مراد شاهمرادی' },
+  { role: 'معاون آموزشی', name: 'معصومه رحیمی' },
+  { role: 'معاون اجرایی', name: 'سیدمهدی آفرنگان' },
+];
+
+function loadStaff() {
+  try {
+    const s = localStorage.getItem('disc_staff');
+    return s ? JSON.parse(s) : DEFAULT_STAFF.map(x => ({...x}));
+  } catch(e) { return DEFAULT_STAFF.map(x => ({...x})); }
+}
+function saveStaff(list) {
+  try { localStorage.setItem('disc_staff', JSON.stringify(list)); } catch(e) {}
+}
+
+function buildRecordedBySelect() {
+  const sel = document.getElementById('discRecordedBy');
+  if (!sel) return;
+  const staff = loadStaff();
+  const cur = sel.value;
+  sel.innerHTML = staff.map(p =>
+    `<option value="${escHtml(p.role + ' ' + p.name)}">${escHtml(p.role)} — ${escHtml(p.name)}</option>`
+  ).join('');
+  if (cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+
+/* نمایش/مخفی کردن فیلد سمت دلخواه */
+function syncRoleInput() {
+  const sel = document.getElementById('newStaffRoleSel');
+  const inp = document.getElementById('newStaffRoleCustom');
+  if (sel.value === '__custom__') {
+    inp.style.display = 'block';
+    sel.style.display = 'none';
+    inp.focus();
+  }
+}
+function getRoleValue() {
+  const sel = document.getElementById('newStaffRoleSel');
+  const inp = document.getElementById('newStaffRoleCustom');
+  if (sel.style.display === 'none') return inp.value.trim();
+  return sel.value === '__custom__' ? '' : sel.value;
+}
+function resetRoleInput() {
+  const sel = document.getElementById('newStaffRoleSel');
+  const inp = document.getElementById('newStaffRoleCustom');
+  sel.value = '';
+  sel.style.display = 'block';
+  inp.style.display = 'none';
+  inp.value = '';
+}
+
+function openStaffMgr() {
+  renderStaffList();
+  document.getElementById('staffOverlay').classList.add('open');
+}
+function closeStaffMgr() {
+  document.getElementById('staffOverlay').classList.remove('open');
+  buildRecordedBySelect();
+}
+
+function roleEmoji(role) {
+  if (!role) return '👤';
+  if (role.includes('مدیر'))    return '👔';
+  if (role.includes('آموزشی')) return '📚';
+  if (role.includes('اجرایی')) return '⚙️';
+  if (role.includes('مشاور'))  return '💬';
+  if (role.includes('معلم'))   return '✏️';
+  return '👤';
+}
+
+function renderStaffList() {
+  const staff = loadStaff();
+  const div = document.getElementById('staffList');
+  if (!staff.length) {
+    div.innerHTML = '<div style="text-align:center;color:var(--sub);font-size:13px;padding:16px;">هیچ ثبت‌کننده‌ای تعریف نشده</div>';
+    return;
+  }
+  div.innerHTML = staff.map((p, i) => `
+    <div style="display:flex;align-items:center;gap:10px;background:var(--gray50);border:2px solid var(--gray100);border-radius:12px;padding:10px 14px;">
+      <div style="font-size:20px;flex-shrink:0;">${roleEmoji(p.role)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(p.name)}</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:1px;">${escHtml(p.role)}</div>
+      </div>
+      <button onclick="removeStaff(${i})" style="background:none;border:2px solid var(--coral);color:var(--coral);cursor:pointer;font-size:12px;padding:4px 10px;border-radius:8px;font-weight:700;white-space:nowrap;flex-shrink:0;">حذف</button>
+    </div>`).join('');
+}
+
+function addStaff() {
+  const role = getRoleValue();
+  const name = document.getElementById('newStaffName').value.trim();
+  if (!role) { showBackupMsg('سمت را وارد کنید', 'error'); return; }
+  if (!name) { document.getElementById('newStaffName').focus(); showBackupMsg('نام را وارد کنید', 'error'); return; }
+  const staff = loadStaff();
+  // اگر سمت جدیده به select اضافه کن
+  const sel = document.getElementById('newStaffRoleSel');
+  const exists = [...sel.options].some(o => o.value === role && o.value !== '__custom__');
+  if (!exists && role) {
+    const opt = document.createElement('option');
+    opt.value = role; opt.textContent = role;
+    sel.insertBefore(opt, sel.querySelector('option[value="__custom__"]'));
+  }
+  staff.push({ role, name });
+  saveStaff(staff);
+  document.getElementById('newStaffName').value = '';
+  resetRoleInput();
+  renderStaffList();
+  showBackupMsg('✅ ' + name + ' افزوده شد');
+}
+
+function removeStaff(idx) {
+  const staff = loadStaff();
+  const p = staff[idx];
+  if (!confirm('«' + p.name + '» حذف شود؟')) return;
+  staff.splice(idx, 1);
+  saveStaff(staff);
+  renderStaffList();
+  showBackupMsg('🗑 حذف شد');
+}
+
+/* ===== بکاپ ===== */
+function backupStaff() {
+  const staff = loadStaff();
+  const blob = new Blob([JSON.stringify({ version: 1, date: new Date().toLocaleDateString('fa-IR'), staff }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ثبت‌کنندگان_' + new Date().toLocaleDateString('fa-IR').replace(/\//g,'-') + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showBackupMsg('✅ فایل پشتیبان دانلود شد');
+}
+
+function restoreStaff(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      const list = data.staff || data; // هر دو فرمت
+      if (!Array.isArray(list)) throw new Error('فرمت نادرست');
+      if (!list.every(p => p.name && p.role)) throw new Error('داده ناقص');
+      saveStaff(list);
+      renderStaffList();
+      showBackupMsg('✅ ' + list.length + ' نفر بازیابی شد');
+    } catch(err) {
+      showBackupMsg('❌ خطا در فایل: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function resetStaff() {
+  if (!confirm('بازگشت به لیست پیش‌فرض؟ اطلاعات فعلی پاک می‌شود.')) return;
+  saveStaff(DEFAULT_STAFF.map(x => ({...x})));
+  renderStaffList();
+  showBackupMsg('🔄 لیست به پیش‌فرض بازگشت');
+}
+
+function showBackupMsg(msg, type) {
+  const el = document.getElementById('backupMsg');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = type === 'error' ? 'var(--coral)' : 'var(--mint)';
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+// ============================================================
+// FULL BACKUP — بکاپ کامل سوابق + ثبت‌کنندگان
+// ============================================================
+function openBackupPanel() {
+  document.getElementById('backupProgress').textContent = '';
+  document.getElementById('restoreMsg').textContent = '';
+  document.getElementById('backupBtnTxt').textContent = '📥 دریافت بکاپ کامل';
+  document.getElementById('backupOverlay').classList.add('open');
+}
+function closeBackupPanel() {
+  document.getElementById('backupOverlay').classList.remove('open');
+}
+
+async function doFullBackup() {
+  const btn = document.getElementById('backupBtnTxt');
+  const prog = document.getElementById('backupProgress');
+  btn.textContent = '⏳ در حال دریافت اطلاعات...';
+  prog.textContent = '';
+
+  // ۱. لیست دانش‌آموزان
+  prog.textContent = '🔄 دریافت لیست دانش‌آموزان...';
+  const sRes = await api('getStudents');
+  if (!sRes.success || !sRes.data) {
+    prog.style.color = 'var(--coral)';
+    prog.textContent = '❌ خطا در دریافت لیست دانش‌آموزان';
+    btn.textContent = '📥 دریافت بکاپ کامل';
+    return;
+  }
+  const students = sRes.data;
+  prog.textContent = `✅ ${students.length} دانش‌آموز یافت شد — در حال دریافت سوابق...`;
+
+  // ۲. سوابق هر دانش‌آموز
+  const allRecords = {};
+  let done = 0;
+  for (const s of students) {
+    const key = `${s.name} ${s.family}`;
+    try {
+      const rRes = await api('getDisciplineRecords', {
+        name: s.name, family: s.family, grade: s.grade, class: s.class
+      });
+      allRecords[key] = {
+        student: s,
+        records: (rRes.success && rRes.data) ? rRes.data : []
+      };
+    } catch(e) {
+      allRecords[key] = { student: s, records: [] };
+    }
+    done++;
+    prog.textContent = `🔄 دریافت سوابق: ${done} از ${students.length} نفر...`;
+  }
+
+  // ۳. ساخت فایل JSON
+  const backup = {
+    version: 2,
+    app: 'دفتر انضباطی نیاسری ۱',
+    date: new Date().toLocaleDateString('fa-IR'),
+    timestamp: new Date().toISOString(),
+    staff: loadStaff(),
+    students: allRecords
+  };
+
+  const totalRec = Object.values(allRecords).reduce((s,v) => s + v.records.length, 0);
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `بکاپ_انضباطی_${new Date().toLocaleDateString('fa-IR').replace(/\//g,'-')}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  prog.style.color = 'var(--mint)';
+  prog.textContent = `✅ بکاپ کامل شد — ${students.length} دانش‌آموز، ${totalRec} سابقه`;
+  btn.textContent = '📥 دریافت بکاپ کامل';
+}
+
+function doFullRestore(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const msg = document.getElementById('restoreMsg');
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      // بازیابی ثبت‌کنندگان
+      if (data.staff && Array.isArray(data.staff)) {
+        saveStaff(data.staff);
+        buildRecordedBySelect();
+        msg.style.color = 'var(--mint)';
+        const recCount = data.students
+          ? Object.values(data.students).reduce((s,v) => s + (v.records||[]).length, 0)
+          : 0;
+        const stuCount = data.students ? Object.keys(data.students).length : 0;
+        msg.textContent = `✅ بازیابی انجام شد — ${data.staff.length} ثبت‌کننده` +
+          (stuCount ? ` + اطلاعات ${stuCount} دانش‌آموز (${recCount} سابقه) در فایل موجود است` : '');
+      } else {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = '❌ فایل بکاپ معتبر نیست';
+      }
+    } catch(err) {
+      msg.style.color = 'var(--coral)';
+      msg.textContent = '❌ خطا در خواندن فایل: ' + err.message;
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+// ============================================================
+// API — دقیقاً همان الگوی callAPI فایل اصلی
+// ============================================================
+async function api(actionName, data={}) {
+  try {
+    // {...data, action} — دقیقاً مثل فایل اصلی
+    const r = await fetch(SHEET_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({...data, action: actionName})
+    });
+    return await r.json();
+  } catch(e) {
+    return {success:false, message:'خطا در ارتباط با سرور'};
+  }
+}
+
+// اجرای هم‌زمانِ چند درخواست async با سقف تعداد هم‌زمان (برای جلوگیری از فشار زیاد روی Apps Script)
+async function fetchWithConcurrency(items, limit, worker) {
+  const results = new Array(items.length);
+  let idx = 0;
+  async function run() {
+    while (idx < items.length) {
+      const current = idx++;
+      results[current] = await worker(items[current], current);
+    }
+  }
+  const runners = Array.from({ length: Math.min(limit, items.length) }, run);
+  await Promise.all(runners);
+  return results;
+}
+
+// ============================================================
+// همهٔ سوابق انضباطی — یک درخواست به‌جای یک درخواست به‌ازای هر دانش‌آموز
+// (نیازمند تابع getAllDisciplineRecords در Apps Script)
+// ============================================================
+let allRecordsFlat = null;
+let allRecordsPromise = null;
+
+async function fetchAllRecords(force = false) {
+  if (!force && allRecordsFlat) return allRecordsFlat;
+  if (!force && allRecordsPromise) return allRecordsPromise;
+  allRecordsPromise = api('getAllDisciplineRecords').then(r => {
+    allRecordsFlat = (r && r.success && Array.isArray(r.data)) ? r.data : [];
+    allRecordsPromise = null;
+    return allRecordsFlat;
+  }).catch(() => {
+    allRecordsPromise = null;
+    return allRecordsFlat || [];
+  });
+  return allRecordsPromise;
+}
+function invalidateAllRecords() {
+  allRecordsFlat = null;
+}
+function countRecordsFor(s, flat) {
+  let c = 0;
+  for (let i = 0; i < flat.length; i++) {
+    const r = flat[i];
+    if (r.name === s.name && r.family === s.family && r.grade === s.grade && r.class === s.class) c++;
+  }
+  return c;
+}
+function recordsFor(s, flat) {
+  return flat.filter(r => r.name === s.name && r.family === s.family && r.grade === s.grade && r.class === s.class);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('load', async () => {
+  buildViolPills();
+  buildActionPills();
+  buildRecordedBySelect();
+  initDatePicker();
+  await loadStudents();
+});
+
+async function loadStudents() {
+  const r = await api('getStudents');
+  if (r.success && r.data) {
+    allStudents = r.data;
+    filterList();
+  } else {
+    document.getElementById('studentGrid').innerHTML =
+      `<div class="empty"><div class="e-icon">😢</div>
+       <p>خطا در دریافت لیست دانش‌آموزان<br>
+       <span style="font-size:12px;color:#aaa;direction:ltr;display:block;margin-top:8px;">${JSON.stringify(r)}</span></p></div>`;
+  }
+}
+
+// ============================================================
+// FILTER + RENDER LIST
+// ============================================================
+function filterList() {
+  const search = document.getElementById('searchInp').value.trim().toLowerCase();
+  const grade  = document.getElementById('gradeFilter').value;
+  const cls    = document.getElementById('classFilter').value;
+  let filtered = allStudents.filter(s => {
+    const name = (s.name+' '+s.family).toLowerCase();
+    return (!search || name.includes(search))
+        && (!grade  || s.grade === grade)
+        && (!cls    || s.class === cls);
+  });
+  filtered.sort((a,b) => {
+    const go = {اول:1,دوم:2,سوم:3};
+    if(go[a.grade]!==go[b.grade]) return go[a.grade]-go[b.grade];
+    if(+a.class !== +b.class) return +a.class - +b.class;
+    return a.family.localeCompare(b.family,'fa');
+  });
+  renderList(filtered);
+}
+
+// ============================================================
+// SELECTION MODE
+// ============================================================
+let selMode = false;
+let selectedKeys = new Set();
+let lastFiltered = [];
+
+function enterSelMode() {
+  selMode = true;
+  selectedKeys.clear();
+  document.getElementById('normalBar').style.display = 'none';
+  document.getElementById('groupBar').style.display  = 'flex';
+  renderList(lastFiltered);
+}
+function exitSelMode() {
+  selMode = false;
+  selectedKeys.clear();
+  document.getElementById('normalBar').style.display = 'flex';
+  document.getElementById('groupBar').style.display  = 'none';
+  renderList(lastFiltered);
+}
+function selectAllVisible() {
+  showToast('⏳ در حال بررسی سوابق...');
+  fetchAllRecords().then(flat => {
+    lastFiltered.forEach(s => {
+      const count = countRecordsFor(s, flat);
+      if (count > 0) selectedKeys.add(s.name + '|' + s.family);
+    });
+    updateCount();
+    renderList(lastFiltered);
+  });
+}
+function clearSel() {
+  selectedKeys.clear();
+  updateCount();
+  renderList(lastFiltered);
+}
+function toggleSel(key) {
+  if (selectedKeys.has(key)) selectedKeys.delete(key);
+  else selectedKeys.add(key);
+  updateCount();
+  renderList(lastFiltered);
+}
+function updateCount() {
+  document.getElementById('selCount').textContent = toFa(String(selectedKeys.size));
+}
+
+// ============================================================
+// FILTER + RENDER LIST
+// ============================================================
+function filterList() {
+  const search = document.getElementById('searchInp').value.trim().toLowerCase();
+  const grade  = document.getElementById('gradeFilter').value;
+  const cls    = document.getElementById('classFilter').value;
+
+  const ORDER = {اول:1, دوم:2, سوم:3, چهارم:4, پنجم:5, ششم:6};
+
+  let filtered = allStudents.filter(s => {
+    const name = (s.name + ' ' + s.family).toLowerCase();
+    return (!search || name.includes(search))
+        && (!grade  || s.grade === grade)
+        && (!cls    || String(s.class) === cls);
+  }).sort((a, b) => {
+    const gd = (ORDER[a.grade] || 9) - (ORDER[b.grade] || 9);
+    if (gd !== 0) return gd;
+    const cd = (+a.class || 0) - (+b.class || 0);
+    if (cd !== 0) return cd;
+    return a.family.localeCompare(b.family, 'fa');
+  });
+
+  lastFiltered = filtered;
+  renderList(filtered);
+}
+
+function accentForIndex(i) {
+  return ACCENT_COLORS[i % ACCENT_COLORS.length];
+}
+
+function renderList(students) {
+  const grid = document.getElementById('studentGrid');
+  if (!students.length) {
+    grid.innerHTML = '<div class="empty"><div class="e-icon">🔍</div><p>دانش‌آموزی یافت نشد.</p></div>';
+    return;
+  }
+
+  // گروه‌بندی پایه/کلاس
+  const groups = [];
+  const groupMap = {};
+  students.forEach(s => {
+    const gk = s.grade + '|' + s.class;
+    if (!groupMap[gk]) {
+      groupMap[gk] = [];
+      groups.push({ gk, label: 'پایه ' + s.grade + ' – کلاس ' + s.class, items: groupMap[gk] });
+    }
+    groupMap[gk].push(s);
+  });
+
+  let num = 0;
+  let html = '';
+  const countTargets = [];
+  groups.forEach(g => {
+    html += `<div style="font-size:12px;font-weight:800;color:var(--sub);padding:8px 4px 4px;margin-top:6px;border-bottom:2px solid var(--gray100);letter-spacing:.3px;">📚 ${escHtml(g.label)}</div>`;
+    g.items.forEach(s => {
+      num++;
+      const key   = s.name + '|' + s.family;
+      const isSel = selectedKeys.has(key);
+      const color = accentForIndex(num - 1);
+      countTargets.push({ num, s });
+
+      if (selMode) {
+        // حالت انتخاب: کل کارت کلیک‌پذیره
+        html += `
+          <div onclick="toggleSel('${escHtml(key)}')"
+               style="background:${isSel ? '#f0ebff' : '#fff'};border:2px solid ${isSel ? 'var(--violet)' : 'var(--gray100)'};
+                      border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;
+                      cursor:pointer;transition:all .15s;box-shadow:${isSel ? '0 4px 16px rgba(155,135,232,.2)' : '0 2px 10px rgba(45,58,80,.06)'};">
+            <!-- چک‌باکس بزرگ -->
+            <div style="width:28px;height:28px;border-radius:8px;border:2px solid ${isSel ? 'var(--violet)' : 'var(--gray300)'};
+                        background:${isSel ? 'var(--violet)' : '#fff'};display:flex;align-items:center;justify-content:center;
+                        flex-shrink:0;transition:all .15s;">
+              ${isSel ? '<span style="color:#fff;font-size:16px;font-weight:900;">✓</span>' : ''}
+            </div>
+            <!-- شماره -->
+            <div style="font-size:12px;font-weight:800;color:${isSel ? 'var(--violet)' : 'var(--sub)'};width:22px;flex-shrink:0;text-align:center;">${toFa(String(num))}</div>
+            <!-- نام -->
+            <div style="flex:1;">
+              <div style="font-size:15px;font-weight:700;color:var(--text);">${escHtml(s.name)} ${escHtml(s.family)}</div>
+              <div style="font-size:12px;color:var(--sub);margin-top:2px;">پایه ${escHtml(s.grade)} – کلاس ${escHtml(s.class)}</div>
+            </div>
+            <span class="badge-count show loading" id="cnt-${num}" onclick="event.stopPropagation()">…</span>
+          </div>`;
+      } else {
+        // حالت عادی
+        html += `
+          <div class="student-card" style="--card-accent:${color}">
+            <div style="width:26px;height:26px;border-radius:8px;background:var(--gray100);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--sub);flex-shrink:0;">${toFa(String(num))}</div>
+            <div class="avatar" style="background:${color}">${s.name.charAt(0)}</div>
+            <div class="card-info">
+              <div class="card-name">${escHtml(s.name)} ${escHtml(s.family)}</div>
+              <div class="card-meta">پایه ${escHtml(s.grade)} – کلاس ${escHtml(s.class)}${s.teacher ? ' | ' + escHtml(s.teacher) : ''}</div>
+            </div>
+            <span class="badge-count show loading" id="cnt-${num}">…</span>
+            <button class="open-btn" style="border-color:${color};color:${color}"
+              onclick='openRecord(${JSON.stringify(s.name)},${JSON.stringify(s.family)},${JSON.stringify(s.grade)},${JSON.stringify(s.class)})'>
+              📋 سوابق
+            </button>
+          </div>`;
+      }
+    });
+  });
+
+  grid.innerHTML = html;
+  loadRecordCounts(countTargets);
+}
+
+// ============================================================
+// تعداد سوابق کنار نام هر دانش‌آموز
+// ============================================================
+async function loadRecordCounts(targets) {
+  const flat = await fetchAllRecords();
+  targets.forEach(({ num, s }) => {
+    const badge = document.getElementById('cnt-' + num);
+    if (!badge) return;
+    renderCountBadge(badge, countRecordsFor(s, flat));
+  });
+}
+
+function renderCountBadge(badge, count) {
+  if (!badge || !badge.isConnected) return;
+  badge.classList.remove('loading');
+  if (count === null) {
+    badge.textContent = '—';
+    badge.classList.add('empty-count');
+    return;
+  }
+  if (count === 0) {
+    badge.textContent = 'بدون سابقه';
+    badge.classList.add('empty-count');
+  } else {
+    badge.textContent = toFa(String(count)) + ' مورد';
+    badge.classList.remove('empty-count');
+  }
+}
+
+// ============================================================
+// GROUP PRINT
+// ============================================================
+function printGroupRecords() {
+  if (!selectedKeys.size) { showToast('ابتدا دانش‌آموزان را انتخاب کنید', 'error'); return; }
+  openPrintSettings('group');
+}
+
+async function buildGroupPrintContent() {
+  showToast('⏳ در حال دریافت اطلاعات...');
+
+  const chosen = lastFiltered.filter(s => selectedKeys.has(s.name + '|' + s.family));
+  const today  = getTodayPersian();
+  const TC = {'تذکر شفاهی':'#e67e22','تذکر کتبی':'#2980b9','احضار ولی':'#c0392b',
+              'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d'};
+
+  // دریافت همهٔ سوابق با یک درخواست (به‌جای یک درخواست جدا برای هر دانش‌آموز) — سرعت چاپ گروهی چند برابر می‌شود
+  const flat = await fetchAllRecords();
+  const recordsPerStudent = chosen.map(s =>
+    recordsFor(s, flat).sort((a,b) => String(a.date||'').localeCompare(String(b.date||'')))
+  );
+
+  let blocks = '';
+  let totalRec = 0;
+
+  chosen.forEach((s, idx) => {
+    const recs = recordsPerStudent[idx];
+    totalRec += recs.length;
+
+    const rows = recs.length
+      ? recs.map((r,i) => {
+          const p   = parseDesc(r.description);
+          const act = (r.action && r.action !== 'addDisciplineRecord') ? r.action : p.act;
+          const tc  = TC[r.type] || '#555';
+          return `<tr>
+            <td style="text-align:center">${i+1}</td>
+            <td style="text-align:center">${getPersianDay(r.date)||'—'}</td>
+            <td style="text-align:center">${toFa(r.date||'—')}</td>
+            <td><span style="background:${tc}18;color:${tc};padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">${escHtml(r.type)}</span></td>
+            <td>${escHtml(p.desc||'—')}</td>
+            <td>${escHtml(act||'—')}</td>
+            <td style="text-align:center;font-size:10px">${escHtml(r.recordedBy||'—')}</td>
+          </tr>`;
+        }).join('')
+      : `<tr><td colspan="7" style="text-align:center;color:#bbb;padding:8px">موردی ثبت نشده</td></tr>`;
+
+    blocks += `
+      <div class="group-student-block">
+        <h3>${escHtml(s.name)} ${escHtml(s.family)} &nbsp;|&nbsp; پایه ${escHtml(s.grade)} – کلاس ${escHtml(s.class)}</h3>
+        <table class="p-table">
+          <colgroup><col style="width:4%"><col style="width:8%"><col style="width:10%"><col style="width:10%"><col style="width:34%"><col style="width:22%"><col style="width:12%"></colgroup>
+          <thead><tr><th>#</th><th>روز</th><th>تاریخ</th><th>نوع</th><th>شرح موضوع</th><th>اقدام</th><th>ثبت‌کننده</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  });
+
+  document.getElementById('printArea').innerHTML = `
+    <div class="p-page">
+      <div class="group-print-header">
+        <div style="font-size:14px;font-weight:900;color:#333">دبستان پسرانه شهید نیاسری ۱</div>
+        <div style="font-size:19px;font-weight:900;margin:5px 0">📋 گزارش سوابق انضباطی</div>
+        <div style="font-size:11px;color:#666">${toFa(String(chosen.length))} دانش‌آموز &nbsp;|&nbsp; ${toFa(String(totalRec))} مورد &nbsp;|&nbsp; تاریخ چاپ: ${today}</div>
+      </div>
+      ${blocks}
+      <div class="p-footer"><div class="p-sign"><div class="p-sign-line">امضا و مهر مدیر مدرسه</div></div></div>
+    </div>`;
+
+  setTimeout(() => { applyPrintLayout(); window.print(); }, 150);
+}
+
+
+
+// ============================================================
+// OPEN RECORD VIEW
+// ============================================================
+async function openRecord(name, family, grade, classNum) {
+  currentStudent = {name, family, grade, class: classNum};
+  document.getElementById('bannerName').textContent = name + ' ' + family;
+  document.getElementById('bannerMeta').textContent = 'پایه ' + grade + ' – کلاس ' + classNum;
+
+  // reset form
+  document.getElementById('discDate').value = getTodayPersian();
+  document.getElementById('discType').value = 'تذکر شفاهی';
+  document.getElementById('discDesc').value = '';
+  document.getElementById('discAction').value = '';
+  buildRecordedBySelect();
+  document.getElementById('violCustom').value = '';
+  document.getElementById('actionCustom').value = '';
+  document.getElementById('discMsg').innerHTML = '';
+
+  // deselect pills
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+
+  showView('viewRecord');
+  document.getElementById('btnBack').classList.add('visible');
+  await loadRecords();
+}
+
+function goBack() {
+  showView('viewList');
+  document.getElementById('btnBack').classList.remove('visible');
+  currentStudent = null;
+}
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ============================================================
+// LOAD + RENDER RECORDS
+// ============================================================
+async function loadRecords() {
+  const list = document.getElementById('recList');
+  list.innerHTML = '<div class="spin-wrap"><div class="spinner"></div>در حال بارگذاری...</div>';
+  const r = await api('getDisciplineRecords', {
+    name: currentStudent.name,
+    family: currentStudent.family,
+    grade: currentStudent.grade,
+    class: currentStudent.class
+  });
+  if (!r.success) {
+    list.innerHTML = '<div class="empty"><div class="e-icon">❌</div><p>خطا در دریافت سوابق</p></div>';
+    currentRecords = [];
+    return;
+  }
+  currentRecords = (r.data || []).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+  renderRecords();
+}
+
+const TYPE_EMOJI = {
+  'تذکر شفاهی':'⚠️','تذکر کتبی':'✏️','احضار ولی':'👨‍👦',
+  'تعهد کتبی':'📝','تعلیق':'🚫','تشویق':'⭐','سایر':'📌'
+};
+const TYPE_BG = {
+  'تذکر شفاهی':'#FFF3CD','تذکر کتبی':'#D1ECF1','احضار ولی':'#FDECEA',
+  'تعهد کتبی':'#EDE7FF','تعلیق':'#FDECEA','تشویق':'#D4EDDA','سایر':'#EEF2F8'
+};
+const TYPE_CLR = {
+  'تذکر شفاهی':'#856404','تذکر کتبی':'#0C5460','احضار ولی':'#842029',
+  'تعهد کتبی':'#5B3CC4','تعلیق':'#842029','تشویق':'#155724','سایر':'#4B5563'
+};
+
+// جداکننده اقدام از شرح
+const ACTION_SEP = '\n||اقدام||';
+
+function parseDesc(raw) {
+  const s = raw || '';
+  const idx = s.indexOf(ACTION_SEP);
+  if (idx === -1) return { desc: s, act: '' };
+  return { desc: s.slice(0, idx), act: s.slice(idx + ACTION_SEP.length) };
+}
+
+function renderRecords() {
+  const list = document.getElementById('recList');
+  if (!currentRecords.length) {
+    list.innerHTML = '<div class="empty"><div class="e-icon">🌟</div><p>هنوز موردی برای این دانش‌آموز ثبت نشده است.</p></div>';
+    return;
+  }
+  list.innerHTML = currentRecords.map(r => {
+    const em = TYPE_EMOJI[r.type] || '📌';
+    const bg = TYPE_BG[r.type]  || '#EEF2F8';
+    const cl = TYPE_CLR[r.type] || '#4B5563';
+    // اقدام: اگر سرور فیلد action داشت استفاده کن، وگرنه از description جدا کن
+    const parsed  = parseDesc(r.description);
+    const dispDesc = parsed.desc;
+    // اقدام: اگر r.action معتبر باشه (نه addDisciplineRecord) استفاده کن
+    const rawAct = (r.action && r.action !== 'addDisciplineRecord') ? r.action : parsed.act;
+    return `<div class="rec-item">
+      <div class="rec-dot" style="background:${bg}">${em}</div>
+      <div class="rec-body">
+        <div class="rec-head">
+          <span class="rec-type-badge" style="background:${bg};color:${cl}">${r.type}</span>
+          <span class="rec-date">📅 ${toFa(r.date||'')} &nbsp; ${getPersianDay(r.date)}</span>
+        </div>
+        <div class="rec-desc">${escHtml(dispDesc)}</div>
+        ${rawAct ? `<div class="rec-action">🛠 ${escHtml(rawAct)}</div>` : ''}
+        <div style="font-size:11px;color:#B0BAC9;margin-top:4px;">ثبت‌کننده: ${escHtml(r.recordedBy||'—')}</div>
+      </div>
+      <button class="rec-del" title="حذف" onclick="askDelete('${r.id}')">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// SUBMIT RECORD
+// ============================================================
+async function submitRecord() {
+  const date       = document.getElementById('discDate').value.trim();
+  const type       = document.getElementById('discType').value;
+  const desc       = document.getElementById('discDesc').value.trim();
+  const actionText = document.getElementById('discAction').value.trim();
+  const recordedBy = document.getElementById('discRecordedBy').value || 'مدیر مدرسه';
+
+  if (!date) { showMsg('لطفاً تاریخ را انتخاب کنید', 'error'); return; }
+  if (!desc)  { showMsg('لطفاً شرح موضوع را بنویسید', 'error'); return; }
+
+  // چون Apps Script کلید action را برای نام عملیات استفاده می‌کند،
+  // اقدام انضباطی را درون description با جداکننده ذخیره می‌کنیم
+  const SEP = '\n||اقدام||';
+  const combinedDesc = actionText ? desc + SEP + actionText : desc;
+
+  const body = {
+    name: currentStudent.name,
+    family: currentStudent.family,
+    grade: currentStudent.grade,
+    class: currentStudent.class,
+    date: date,
+    type: type,
+    description: combinedDesc,
+    recordedBy: recordedBy,
+    action: 'addDisciplineRecord'   // این آخر میاد تا نام عملیات درست باشد
+  };
+
+  let r;
+  try {
+    const resp = await fetch(SHEET_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(body)
+    });
+    r = await resp.json();
+  } catch(e) {
+    r = { success: false, message: 'خطا در ارتباط با سرور' };
+  }
+
+  if (r.success) {
+    showMsg('مورد با موفقیت ثبت شد ✅', 'success');
+    document.getElementById('discDesc').value = '';
+    document.getElementById('discAction').value = '';
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    invalidateAllRecords();
+    await loadRecords();
+  } else {
+    showMsg('خطا: ' + JSON.stringify(r), 'error');
+  }
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('discMsg');
+  const bg = type==='success'?'#d4edda':'#f8d7da';
+  const cl = type==='success'?'#155724':'#721c24';
+  el.innerHTML = `<div style="background:${bg};color:${cl};padding:12px 16px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:12px;">${text}</div>`;
+  setTimeout(() => { el.innerHTML=''; }, 4000);
+}
+
+// ============================================================
+// DELETE
+// ============================================================
+function askDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm() {
+  pendingDeleteId = null;
+  document.getElementById('confirmOverlay').classList.remove('open');
+}
+async function doDelete() {
+  if (!pendingDeleteId) return;
+  const r = await api('deleteDisciplineRecord', {id: pendingDeleteId});
+  closeConfirm();
+  if (r.success) {
+    showToast('مورد حذف شد 🗑️');
+    invalidateAllRecords();
+    await loadRecords();
+  } else {
+    showToast('خطا در حذف!', 'error');
+  }
+}
+
+// ============================================================
+// PILLS
+// ============================================================
+function buildViolPills() {
+  const wrap = document.getElementById('violPills');
+  wrap.innerHTML = VIOLATION_PILLS.map(p =>
+    `<button class="pill" onclick="togglePill(this,'discDesc','${p.val}')">${p.label}</button>`
+  ).join('');
+}
+function buildActionPills() {
+  const wrap = document.getElementById('actionPills');
+  wrap.innerHTML = ACTION_PILLS.map(p =>
+    `<button class="pill" onclick="togglePill(this,'discAction','${p.val}')">${p.label}</button>`
+  ).join('');
+}
+function togglePill(btn, boxId, val) {
+  btn.classList.toggle('active');
+  appendToBox(boxId, val);
+}
+function appendToBox(id, val) {
+  if (!val) return;
+  const box = document.getElementById(id);
+  const cur = box.value.trim();
+  if (!cur) box.value = val;
+  else if (!cur.includes(val)) box.value = cur + '، ' + val;
+}
+function addCustomViol() {
+  const inp = document.getElementById('violCustom');
+  appendToBox('discDesc', inp.value.trim());
+  inp.value = '';
+}
+function addCustomAction() {
+  const inp = document.getElementById('actionCustom');
+  appendToBox('discAction', inp.value.trim());
+  inp.value = '';
+}
+
+// ============================================================
+// DATE PICKER
+// ============================================================
+const MONTHS = ['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور',
+                'مهر','آبان','آذر','دی','بهمن','اسفند'];
+
+function initDatePicker() {
+  const grid = document.getElementById('dpMonthGrid');
+  grid.innerHTML = MONTHS.map((m,i) =>
+    `<button class="dp-btn" onclick="pickMonth(${i+1})">${m}</button>`
+  ).join('');
+}
+function openDatePicker() {
+  document.getElementById('dpOverlay').classList.add('open');
+  document.getElementById('dpDayWrap').style.display='none';
+  dpSelectedMonth = null;
+}
+function closeDatePicker() {
+  document.getElementById('dpOverlay').classList.remove('open');
+}
+function pickMonth(m) {
+  dpSelectedMonth = m;
+  const days = m<=6?31:(m<=11?30:29);
+  const grid = document.getElementById('dpDayGrid');
+  grid.innerHTML = '';
+  for(let d=1;d<=days;d++) {
+    const b = document.createElement('button');
+    b.className='dp-btn'; b.textContent=d;
+    b.onclick=()=>pickDay(m,d);
+    grid.appendChild(b);
+  }
+  document.getElementById('dpDayWrap').style.display='block';
+}
+function pickDay(m, d) {
+  const y = document.getElementById('dpYear').value;
+  document.getElementById('discDate').value =
+    `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`;
+  closeDatePicker();
+}
+
+// ============================================================
+// PRINT SETTINGS (جهت + چیدمان)
+// ============================================================
+let printOrient = localStorage.getItem('disc_print_orient') || 'landscape';
+let printMode   = localStorage.getItem('disc_print_mode')   || 'fit';
+let pendingPrintContext = null; // 'single' | 'group'
+
+function openPrintSettings(context) {
+  pendingPrintContext = context;
+  updatePrintSettingsUI();
+  document.getElementById('printSettingsOverlay').classList.add('open');
+}
+function closePrintSettings() {
+  document.getElementById('printSettingsOverlay').classList.remove('open');
+  pendingPrintContext = null;
+}
+function setPrintOrient(o) { printOrient = o; updatePrintSettingsUI(); }
+function setPrintMode(m)   { printMode = m; updatePrintSettingsUI(); }
+function updatePrintSettingsUI() {
+  document.getElementById('psOrientLandscape').classList.toggle('active', printOrient === 'landscape');
+  document.getElementById('psOrientPortrait').classList.toggle('active', printOrient === 'portrait');
+  document.getElementById('psModeFit').classList.toggle('active', printMode === 'fit');
+  document.getElementById('psModeFlow').classList.toggle('active', printMode === 'flow');
+}
+function confirmPrintSettings() {
+  localStorage.setItem('disc_print_orient', printOrient);
+  localStorage.setItem('disc_print_mode', printMode);
+  const ctx = pendingPrintContext;
+  closePrintSettings();
+  if (ctx === 'single') buildSinglePrintContent();
+  else if (ctx === 'group') buildGroupPrintContent();
+}
+
+// جهت‌گذاری @page و در صورت انتخاب «یک صفحه»، فشرده‌سازی محتوا با اندازه‌گیری واقعی
+function applyPrintLayout() {
+  let styleTag = document.getElementById('dynamicPrintStyle');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = 'dynamicPrintStyle';
+    document.head.appendChild(styleTag);
+  }
+  styleTag.textContent = `@media print { @page { size: A4 ${printOrient}; margin: 12mm 10mm; } }`;
+
+  const area = document.getElementById('printArea');
+  const page = area.querySelector('.p-page');
+  if (!page) return;
+
+  page.style.transform = '';
+  page.style.width = '';
+  page.style.transformOrigin = '';
+  page.classList.remove('p-flow');
+
+  if (printMode === 'flow') {
+    page.classList.add('p-flow');
+    return;
+  }
+
+  // حالت «در یک صفحه»: اندازه‌گیری ارتفاع واقعی محتوا در عرض صفحه چاپ و مقیاس‌دهی برای جا شدن در یک برگه
+  const mmToPx  = 96 / 25.4;
+  const pageWmm = printOrient === 'landscape' ? 297 : 210;
+  const pageHmm = printOrient === 'landscape' ? 210 : 297;
+  const usableWpx = (pageWmm - 20) * mmToPx;
+  const usableHpx = (pageHmm - 24) * mmToPx;
+
+  const prevCss = area.style.cssText;
+  area.style.cssText = `position:fixed; top:-10000px; left:-10000px; display:block; width:${usableWpx}px;`;
+  const contentH = page.scrollHeight;
+  area.style.cssText = prevCss;
+
+  const scale = contentH > usableHpx ? (usableHpx / contentH) : 1;
+  if (scale < 1) {
+    page.style.transformOrigin = 'top right';
+    page.style.transform = `scale(${scale})`;
+    page.style.width = `${100 / scale}%`;
+  }
+}
+
+// ============================================================
+// PRINT
+// ============================================================
+function printRecords() {
+  if (!currentStudent) return;
+  openPrintSettings('single');
+}
+
+function buildSinglePrintContent() {
+  if (!currentStudent) return;
+  const s = currentStudent;
+  const today = getTodayPersian();
+
+  const typeColors = {
+    'تذکر شفاهی':'#f39c12','تذکر کتبی':'#2980b9','احضار ولی':'#c0392b',
+    'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d'
+  };
+
+  const rows = currentRecords.length
+    ? currentRecords.map((r, i) => {
+        const dayName  = getPersianDay(r.date) || '—';
+        const dateStr  = toFa(r.date || '—');
+        const typeColor = typeColors[r.type] || '#555';
+        const parsed   = parseDesc(r.description);
+        const dispDesc = parsed.desc || '—';
+        const rawAct   = (r.action && r.action !== 'addDisciplineRecord') ? r.action : parsed.act;
+        const actionVal = rawAct ? escHtml(rawAct) : '<span style="color:#bbb">—</span>';
+        return `<tr>
+          <td style="text-align:center;font-weight:700;">${i+1}</td>
+          <td style="text-align:center;">${dayName}</td>
+          <td style="text-align:center;">${dateStr}</td>
+          <td><span class="p-type-badge" style="background:${typeColor}22;color:${typeColor};">${escHtml(r.type)}</span></td>
+          <td>${escHtml(dispDesc)}</td>
+          <td>${actionVal}</td>
+          <td style="text-align:center;font-size:10px;">${escHtml(r.recordedBy || '—')}</td>
+        </tr>`;
+      }).join('')
+    : `<tr><td colspan="7" style="text-align:center;color:#999;padding:16px;">موردی ثبت نشده است</td></tr>`;
+
+  // آمار ساده
+  const total = currentRecords.length;
+  const typeCounts = {};
+  currentRecords.forEach(r => { typeCounts[r.type] = (typeCounts[r.type]||0)+1; });
+  const statsText = Object.entries(typeCounts)
+    .map(([t,c]) => `${t}: ${toFa(String(c))} مورد`)
+    .join('   |   ');
+
+  document.getElementById('printArea').innerHTML = `
+<div class="p-page">
+
+  <div class="p-top">
+    <div class="p-school">دبستان پسرانه شهید نیاسری ۱</div>
+    <div class="p-title">📋 دفتر انضباطی</div>
+    <div class="p-date">تاریخ چاپ: ${today}</div>
+  </div>
+
+  <div class="p-student-bar">
+    <span>نام و نام خانوادگی: <b>${escHtml(s.name)} ${escHtml(s.family)}</b></span>
+    <span>پایه: <b>${escHtml(s.grade)}</b></span>
+    <span>کلاس: <b>${escHtml(s.class)}</b></span>
+    <span>تعداد سوابق: <b>${toFa(String(total))} مورد</b></span>
+  </div>
+
+  <table class="p-table">
+    <colgroup>
+      <col/><col/><col/><col/><col/><col/><col/>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>روز هفته</th>
+        <th>تاریخ</th>
+        <th>نوع مورد</th>
+        <th>شرح موضوع / تخلف</th>
+        <th>اقدام انجام‌شده</th>
+        <th>ثبت‌کننده</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  </table>
+
+  ${total > 0 ? `<div class="p-stats">خلاصه: ${statsText}</div>` : ''}
+
+  <div class="p-footer">
+    <div class="p-sign">
+      <div class="p-sign-line">امضا و مهر مدیر مدرسه</div>
+    </div>
+  </div>
+
+</div>`;
+
+  setTimeout(() => { applyPrintLayout(); window.print(); }, 120);
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function getTodayPersian() {
+  return new Date().toLocaleDateString('fa-IR').replace(/[\u06F0-\u06F9]/g, d =>
+    String.fromCharCode(d.charCodeAt(0)-1728));
+}
+function toFa(str) {
+  return String(str).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[+d]);
+}
+function escHtml(s) {
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+const DAYS = {0:'یکشنبه',1:'دوشنبه',2:'سه‌شنبه',3:'چهارشنبه',4:'پنجشنبه',5:'جمعه',6:'شنبه'};
+function getPersianDay(dateStr) {
+  if (!dateStr) return '';
+  const parts = String(dateStr).split('/');
+  if (parts.length < 3) return '';
+  const jy = parseInt(parts[0],10);
+  const jm = parseInt(parts[1],10);
+  const jd = parseInt(parts[2],10);
+  if (!jy || !jm || !jd) return '';
+  try {
+    const g = j2g(jy, jm, jd);
+    const dt = new Date(g[0], g[1]-1, g[2]);
+    return DAYS[dt.getDay()] || '';
+  } catch(e) { return ''; }
+}
+
+/* تبدیل جلالی به میلادی — الگوریتم تست‌شده و دقیق */
+function j2g(jy, jm, jd) {
+  const jy2 = jy - 979;
+  const jm2 = jm - 1;
+  const jd2 = jd - 1;
+  let j_day_no = 365 * jy2 + Math.floor(jy2 / 33) * 8 + Math.floor((jy2 % 33 + 3) / 4);
+  for (let i = 0; i < jm2; ++i) j_day_no += (i < 6 ? 31 : 30);
+  j_day_no += jd2;
+  let g_day_no = j_day_no + 79;
+  let gy = 1600 + 400 * Math.floor(g_day_no / 146097);
+  g_day_no %= 146097;
+  let leap = true;
+  if (g_day_no >= 36525) {
+    g_day_no--;
+    gy += 100 * Math.floor(g_day_no / 36524);
+    g_day_no %= 36524;
+    if (g_day_no >= 365) g_day_no++;
+    else leap = false;
+  }
+  gy += 4 * Math.floor(g_day_no / 1461);
+  g_day_no %= 1461;
+  if (g_day_no >= 366) {
+    leap = false;
+    g_day_no--;
+    gy += Math.floor(g_day_no / 365);
+    g_day_no %= 365;
+  }
+  const md = [31, (leap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let gm = 0;
+  for (; gm < 12; gm++) {
+    if (g_day_no < md[gm]) break;
+    g_day_no -= md[gm];
+  }
+  return [gy, gm + 1, g_day_no + 1];
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type==='error'?' error':' success');
+  setTimeout(()=>{ t.className='toast'; }, 3000);
+}
+</script>
+</body>
+</html>
