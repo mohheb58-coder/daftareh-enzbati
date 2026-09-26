@@ -922,6 +922,19 @@
       <div id="backupMsg" style="margin-top:8px;font-size:12px;color:var(--mint);min-height:18px;text-align:center;"></div>
     </div>
 
+    <!-- همگام‌سازی غیبت‌های قبلی -->
+    <div style="border-top:2px solid var(--gray100);padding-top:16px;margin-top:12px;">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:6px;">🔄 همگام‌سازی غیبت‌های قبلی</div>
+      <div style="font-size:11.5px;color:var(--sub);margin-bottom:10px;line-height:1.7;">
+        غیبت‌هایی که پیش از فعال‌شدن ثبت خودکار، از سامانه حضور و غیاب ثبت شده‌اند
+        هنوز به‌صورت «غیبت غیرموجه» در دفتر انضباطی درج نشده‌اند. این دکمه یک‌بار همه‌ی
+        شیت غیبت‌ها را بررسی می‌کند و برای هر غیبتی که هنوز سابقه ندارد، رکورد «غیبت غیرموجه»
+        می‌سازد. اجرای چندباره‌ی آن مشکلی ایجاد نمی‌کند (رکورد تکراری ساخته نمی‌شود).
+      </div>
+      <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;" id="backfillBtn" onclick="runBackfillAbsences()">🔄 اجرای همگام‌سازی</button>
+      <div id="backfillMsg" style="margin-top:8px;font-size:12px;color:var(--mint);min-height:18px;text-align:center;"></div>
+    </div>
+
   </div>
 </div>
 <div class="confirm-overlay" id="confirmOverlay">
@@ -1033,7 +1046,7 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx5hOiM4RMnD8dth7ijL5CS4ors_-uuxAn5zwLXOwYlOExu6mHcrGCRhIEHp5W_HrLyFQ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycby--l3zAa8GeRe-pOBGXknYWwk4TTgQxgh5MycY1LDL84fbkUXwCgmRmqL8il53mk0OcQ/exec';
 
 // رنگ‌های کارت به ترتیب پایه/کلاس
 const ACCENT_COLORS = [
@@ -1250,6 +1263,33 @@ function showBackupMsg(msg, type) {
   el.textContent = msg;
   el.style.color = type === 'error' ? 'var(--coral)' : 'var(--mint)';
   setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+/* ===== همگام‌سازی غیبت‌های قبلی با دفتر انضباطی ===== */
+async function runBackfillAbsences() {
+  const btn = document.getElementById('backfillBtn');
+  const msgEl = document.getElementById('backfillMsg');
+  btn.disabled = true;
+  btn.textContent = '⏳ در حال بررسی و ثبت...';
+  msgEl.style.color = 'var(--sub)';
+  msgEl.textContent = 'ممکن است چند ثانیه طول بکشد...';
+
+  const r = await api('backfillAbsenceDiscipline', {});
+
+  btn.disabled = false;
+  btn.textContent = '🔄 اجرای همگام‌سازی';
+
+  if (r.success) {
+    const added = (r.data && r.data.added) || 0;
+    const skipped = (r.data && r.data.skipped) || 0;
+    msgEl.style.color = 'var(--mint)';
+    msgEl.textContent = `✅ ${added} مورد جدید ثبت شد، ${skipped} مورد قبلاً ثبت شده بود`;
+    invalidateAllRecords();
+    if (currentStudent) await loadRecords();
+  } else {
+    msgEl.style.color = 'var(--coral)';
+    msgEl.textContent = '❌ خطا: ' + (r.message || 'نامشخص');
+  }
 }
 
 // ============================================================
