@@ -373,6 +373,19 @@
     flex-shrink: 0;
   }
   .rec-del:hover { background: #fff0f0; }
+  .rec-approve {
+    background: #eafaf0; border: none; cursor: pointer;
+    font-size: 11px; font-weight: 700; color: #155724;
+    padding: 5px 10px;
+    border-radius: 20px;
+    transition: background .15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .rec-approve:hover { background: #d4edda; }
+  .rec-source-tag {
+    font-size: 10px; color: #B0BAC9; margin-inline-start: 4px;
+  }
 
   /* ===== EMPTY STATE ===== */
   .empty {
@@ -758,6 +771,8 @@
             <option value="تعهد کتبی">📝 تعهد کتبی</option>
             <option value="تعلیق">🚫 تعلیق</option>
             <option value="تشویق">⭐ تشویق</option>
+            <option value="غیبت غیرموجه">👻 غیبت غیرموجه</option>
+            <option value="غیبت موجه">✅ غیبت موجه</option>
             <option value="سایر">📌 سایر</option>
           </select>
         </div>
@@ -1018,7 +1033,7 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxAzwqUuIUKt0fuDrYbv2bMElVTVMmT6fzs8CU2zMBHOWav-L6cw26J7Rp5HuTX-7k4tQ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx5hOiM4RMnD8dth7ijL5CS4ors_-uuxAn5zwLXOwYlOExu6mHcrGCRhIEHp5W_HrLyFQ/exec';
 
 // رنگ‌های کارت به ترتیب پایه/کلاس
 const ACCENT_COLORS = [
@@ -1654,7 +1669,8 @@ async function buildGroupPrintContent() {
   const chosen = lastFiltered.filter(s => selectedKeys.has(s.name + '|' + s.family));
   const today  = getTodayPersian();
   const TC = {'تذکر شفاهی':'#e67e22','تذکر کتبی':'#2980b9','احضار ولی':'#c0392b',
-              'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d'};
+              'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d',
+              'غیبت غیرموجه':'#c0392b','غیبت موجه':'#27ae60'};
 
   // دریافت همهٔ سوابق با یک درخواست (به‌جای یک درخواست جدا برای هر دانش‌آموز) — سرعت چاپ گروهی چند برابر می‌شود
   const flat = await fetchAllRecords();
@@ -1774,15 +1790,18 @@ async function loadRecords() {
 
 const TYPE_EMOJI = {
   'تذکر شفاهی':'⚠️','تذکر کتبی':'✏️','احضار ولی':'👨‍👦',
-  'تعهد کتبی':'📝','تعلیق':'🚫','تشویق':'⭐','سایر':'📌'
+  'تعهد کتبی':'📝','تعلیق':'🚫','تشویق':'⭐','سایر':'📌',
+  'غیبت غیرموجه':'👻','غیبت موجه':'✅'
 };
 const TYPE_BG = {
   'تذکر شفاهی':'#FFF3CD','تذکر کتبی':'#D1ECF1','احضار ولی':'#FDECEA',
-  'تعهد کتبی':'#EDE7FF','تعلیق':'#FDECEA','تشویق':'#D4EDDA','سایر':'#EEF2F8'
+  'تعهد کتبی':'#EDE7FF','تعلیق':'#FDECEA','تشویق':'#D4EDDA','سایر':'#EEF2F8',
+  'غیبت غیرموجه':'#FDECEA','غیبت موجه':'#D4EDDA'
 };
 const TYPE_CLR = {
   'تذکر شفاهی':'#856404','تذکر کتبی':'#0C5460','احضار ولی':'#842029',
-  'تعهد کتبی':'#5B3CC4','تعلیق':'#842029','تشویق':'#155724','سایر':'#4B5563'
+  'تعهد کتبی':'#5B3CC4','تعلیق':'#842029','تشویق':'#155724','سایر':'#4B5563',
+  'غیبت غیرموجه':'#842029','غیبت موجه':'#155724'
 };
 
 // جداکننده اقدام از شرح
@@ -1810,18 +1829,21 @@ function renderRecords() {
     const dispDesc = parsed.desc;
     // اقدام: اگر r.action معتبر باشه (نه addDisciplineRecord) استفاده کن
     const rawAct = (r.action && r.action !== 'addDisciplineRecord') ? r.action : parsed.act;
+    const isAutoAbsence = r.source === 'حضور و غیاب';
     return `<div class="rec-item">
       <div class="rec-dot" style="background:${bg}">${em}</div>
       <div class="rec-body">
         <div class="rec-head">
           <span class="rec-type-badge" style="background:${bg};color:${cl}">${r.type}</span>
           <span class="rec-date">📅 ${toFa(r.date||'')} &nbsp; ${getPersianDay(r.date)}</span>
+          ${isAutoAbsence ? `<span class="rec-source-tag">⚙️ خودکار از حضور و غیاب</span>` : ''}
         </div>
         <div class="rec-desc">${escHtml(dispDesc)}</div>
         ${rawAct ? `<div class="rec-action">🛠 ${escHtml(rawAct)}</div>` : ''}
         <div style="font-size:11px;color:#B0BAC9;margin-top:4px;">ثبت‌کننده: ${escHtml(r.recordedBy||'—')}</div>
       </div>
-      <button class="rec-del" title="حذف" onclick='askDelete(${JSON.stringify(r.id)})'>🗑</button>
+      ${r.type === 'غیبت غیرموجه' ? `<button class="rec-approve" title="با ارائه مستندات/گواهی از سوی اولیا، به موجه تبدیل کنید" onclick="askApproveExcuse('${r.id}')">✅ موجه شد</button>` : ''}
+      <button class="rec-del" title="حذف" onclick="askDelete('${r.id}')">🗑</button>
     </div>`;
   }).join('');
 }
@@ -1880,6 +1902,32 @@ async function submitRecord() {
   }
 }
 
+// ============================================================
+// تبدیل «غیبت غیرموجه» به «غیبت موجه»
+// (وقتی اولیا برای مدرسه مستندات یا گواهی می‌آورند)
+// ============================================================
+async function askApproveExcuse(id) {
+  const note = window.prompt('توضیح مدرک/گواهی ارائه‌شده توسط اولیا (اختیاری):', '');
+  if (note === null) return; // انصراف کاربر
+
+  const recordedBy = (document.getElementById('discRecordedBy') && document.getElementById('discRecordedBy').value) || 'مدیر مدرسه';
+
+  const r = await api('updateDisciplineRecordType', {
+    id: id,
+    type: 'غیبت موجه',
+    note: note.trim() ? note.trim() : 'مستندات/گواهی توسط اولیا ارائه شد',
+    recordedBy: recordedBy
+  });
+
+  if (r.success) {
+    showToast('غیبت با موفقیت به موجه تبدیل شد ✅');
+    invalidateAllRecords();
+    await loadRecords();
+  } else {
+    showToast('خطا در به‌روزرسانی: ' + (r.message || ''), 'error');
+  }
+}
+
 function showMsg(text, type) {
   const el = document.getElementById('discMsg');
   const bg = type==='success'?'#d4edda':'#f8d7da';
@@ -1908,7 +1956,7 @@ async function doDelete() {
     invalidateAllRecords();
     await loadRecords();
   } else {
-    showToast('خطا در حذف: ' + (r.message || 'نامشخص'), 'error');
+    showToast('خطا در حذف!', 'error');
   }
 }
 
@@ -2081,7 +2129,8 @@ function buildSinglePrintContent() {
 
   const typeColors = {
     'تذکر شفاهی':'#f39c12','تذکر کتبی':'#2980b9','احضار ولی':'#c0392b',
-    'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d'
+    'تعهد کتبی':'#8e44ad','تعلیق':'#c0392b','تشویق':'#27ae60','سایر':'#7f8c8d',
+    'غیبت غیرموجه':'#c0392b','غیبت موجه':'#27ae60'
   };
 
   const rows = currentRecords.length
