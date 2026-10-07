@@ -1046,7 +1046,7 @@
 // ============================================================
 // CONFIG
 // ============================================================
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxGSxM3KpgAMOwCzKR2vQpvhqmlmqjx4q0mJrYHIRXkvDDzViHZkejdWA7iFz4ln7QYBA/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycby9DkAvH2N2gcBrYIa3saCKEh8UT9y67eFQRghTxIZ5xEDR1GxfplTFSxlprPKp3p_iEQ/exec';
 
 // رنگ‌های کارت به ترتیب پایه/کلاس
 const ACCENT_COLORS = [
@@ -1450,8 +1450,34 @@ async function fetchAllRecords(force = false) {
   });
   return allRecordsPromise;
 }
+
+// ============================================================
+// تعداد سوابق هر دانش‌آموز — نسخهٔ سبک (بهینه‌سازی سرعت)
+// ============================================================
+// برخلاف fetchAllRecords (که کل محتوای هر رکورد را می‌آورد)، این تابع
+// فقط برای شمارشِ «چند مورد» کنار هر نام در لیست دانش‌آموزان استفاده
+// می‌شود و با تابع سبکِ getDisciplineCounts در Apps Script کار می‌کند؛
+// چون حجم پاسخ خیلی کمتره، باز شدنِ لیست دانش‌آموزان سریع‌تر می‌شود.
+let disciplineCountsMap = null;
+let disciplineCountsPromise = null;
+
+async function fetchDisciplineCounts(force = false) {
+  if (!force && disciplineCountsMap) return disciplineCountsMap;
+  if (!force && disciplineCountsPromise) return disciplineCountsPromise;
+  disciplineCountsPromise = api('getDisciplineCounts').then(r => {
+    disciplineCountsMap = (r && r.success && r.data) ? r.data : {};
+    disciplineCountsPromise = null;
+    return disciplineCountsMap;
+  }).catch(() => {
+    disciplineCountsPromise = null;
+    return disciplineCountsMap || {};
+  });
+  return disciplineCountsPromise;
+}
+
 function invalidateAllRecords() {
   allRecordsFlat = null;
+  disciplineCountsMap = null;
 }
 function countRecordsFor(s, flat) {
   let c = 0;
@@ -1460,6 +1486,10 @@ function countRecordsFor(s, flat) {
     if (r.name === s.name && r.family === s.family && r.grade === s.grade && r.class === s.class) c++;
   }
   return c;
+}
+function countForStudent(s, countsMap) {
+  const key = s.name + '|' + s.family + '|' + s.grade + '|' + s.class;
+  return countsMap[key] || 0;
 }
 function recordsFor(s, flat) {
   return flat.filter(r => r.name === s.name && r.family === s.family && r.grade === s.grade && r.class === s.class);
@@ -1534,9 +1564,9 @@ function exitSelMode() {
 }
 function selectAllVisible() {
   showToast('⏳ در حال بررسی سوابق...');
-  fetchAllRecords().then(flat => {
+  fetchDisciplineCounts().then(counts => {
     lastFiltered.forEach(s => {
-      const count = countRecordsFor(s, flat);
+      const count = countForStudent(s, counts);
       if (count > 0) selectedKeys.add(s.name + '|' + s.family);
     });
     updateCount();
@@ -1670,11 +1700,11 @@ function renderList(students) {
 // تعداد سوابق کنار نام هر دانش‌آموز
 // ============================================================
 async function loadRecordCounts(targets) {
-  const flat = await fetchAllRecords();
+  const counts = await fetchDisciplineCounts();
   targets.forEach(({ num, s }) => {
     const badge = document.getElementById('cnt-' + num);
     if (!badge) return;
-    renderCountBadge(badge, countRecordsFor(s, flat));
+    renderCountBadge(badge, countForStudent(s, counts));
   });
 }
 
