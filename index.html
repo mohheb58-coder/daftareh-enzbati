@@ -1323,25 +1323,22 @@ async function doFullBackup() {
   const students = sRes.data;
   prog.textContent = `✅ ${students.length} دانش‌آموز یافت شد — در حال دریافت سوابق...`;
 
-  // ۲. سوابق هر دانش‌آموز
+  // ۲. سوابق همهٔ دانش‌آموزان — یک درخواستِ یک‌جا به‌جای یک درخواست جدا
+  // به‌ازای هر دانش‌آموز (قبلاً برای مدرسه‌ای با ۱۵۰ دانش‌آموز یعنی ۱۵۰
+  // درخواست پشت‌سرهم به سرور که دقایق طول می‌کشید؛ الان فقط یک درخواست)
   const allRecords = {};
-  let done = 0;
-  for (const s of students) {
-    const key = `${s.name} ${s.family}`;
-    try {
-      const rRes = await api('getDisciplineRecords', {
-        name: s.name, family: s.family, grade: s.grade, class: s.class
-      });
-      allRecords[key] = {
-        student: s,
-        records: (rRes.success && rRes.data) ? rRes.data : []
-      };
-    } catch(e) {
-      allRecords[key] = { student: s, records: [] };
-    }
-    done++;
-    prog.textContent = `🔄 دریافت سوابق: ${done} از ${students.length} نفر...`;
+  try {
+    const flat = await fetchAllRecords(true); // force=true تا همیشه آخرین داده را بگیرد
+    students.forEach(s => {
+      const key = `${s.name} ${s.family}`;
+      allRecords[key] = { student: s, records: recordsFor(s, flat) };
+    });
+  } catch(e) {
+    students.forEach(s => {
+      allRecords[`${s.name} ${s.family}`] = { student: s, records: [] };
+    });
   }
+  prog.textContent = `✅ سوابق ${students.length} دانش‌آموز آماده شد — در حال ساخت فایل...`;
 
   // ۳. ساخت فایل JSON
   const backup = {
@@ -1511,6 +1508,9 @@ async function loadStudents() {
   if (r.success && r.data) {
     allStudents = r.data;
     filterList();
+    // پیش‌بارگذاریِ کلِ سوابق در پس‌زمینه (بدون await) تا وقتی کاربر
+    // روی اولین دانش‌آموز کلیک کرد، دیگر منتظر دریافت از سرور نماند
+    fetchAllRecords();
   } else {
     document.getElementById('studentGrid').innerHTML =
       `<div class="empty"><div class="e-icon">😢</div>
@@ -1840,21 +1840,43 @@ function showView(id) {
 // ============================================================
 // LOAD + RENDER RECORDS
 // ============================================================
+// *** بهینه‌سازی مهم (رفع کندی + رفع نمایش اشتباه «یافت نشد») ***
+// قبلاً هر بار که روی یک دانش‌آموز کلیک می‌شد، یک درخواست جداگانه به
+// سرور می‌رفت (getDisciplineRecords) که کل شیت دفتر انضباطی را
+// می‌خواند و فیلتر می‌کرد — با رشد شیت، این کار کند می‌شد. از طرفی،
+// چون این تابع await نشده بود در جاهایی، اگر کاربر سریع روی چند
+// دانش‌آموز پشت‌سرهم کلیک می‌کرد، پاسخِ دانش‌آموزِ قبلی ممکن بود دیرتر
+// برسد و لیست را با اطلاعاتِ غلط (یا خالی) جایگزین کند — دقیقاً همان
+// چیزی که به‌شکل «یافت نشد» دیده می‌شد.
+// حالا از کشِ کلیِ fetchAllRecords (که فقط یک‌بار در کل نشست خوانده و
+// سپس تا وقتی چیزی تغییر نکند از حافظه استفاده می‌شود) استفاده می‌کنیم؛
+// باز کردنِ سوابقِ هر دانش‌آموز، بعد از اولین بار، آنی و بدون درخواست
+// جدید به سرور است. یک شمارهٔ درخواست (token) هم تضمین می‌کند که اگر
+// کاربر میانِ کار دانش‌آموز دیگری را باز کرد، نتیجهٔ قدیمی نمایش داده نشود.
+let loadRecordsToken = 0;
 async function loadRecords() {
+  const myToken = ++loadRecordsToken;
+  const myStudent = currentStudent;
   const list = document.getElementById('recList');
   list.innerHTML = '<div class="spin-wrap"><div class="spinner"></div>در حال بارگذاری...</div>';
-  const r = await api('getDisciplineRecords', {
-    name: currentStudent.name,
-    family: currentStudent.family,
-    grade: currentStudent.grade,
-    class: currentStudent.class
-  });
-  if (!r.success) {
+
+  let flat;
+  try {
+    flat = await fetchAllRecords();
+  } catch (e) {
+    flat = null;
+  }
+
+  // اگر در این فاصله دانش‌آموز دیگری باز شده، این پاسخ را نادیده بگیر
+  if (myToken !== loadRecordsToken) return;
+
+  if (!flat) {
     list.innerHTML = '<div class="empty"><div class="e-icon">❌</div><p>خطا در دریافت سوابق</p></div>';
     currentRecords = [];
     return;
   }
-  currentRecords = (r.data || []).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+
+  currentRecords = recordsFor(myStudent, flat).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
   renderRecords();
 }
 
