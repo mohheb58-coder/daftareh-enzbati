@@ -112,7 +112,7 @@
   /* ===== FILTER ROW ===== */
   .filter-row {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto auto auto;
     gap: 10px;
     margin-bottom: 18px;
     align-items: end;
@@ -654,6 +654,12 @@
   .group-student-block { margin-bottom: 24px; page-break-inside: avoid; }
   .group-student-block h3 { font-size: 13px; font-weight: 800; margin-bottom: 6px; color: #333; border-right: 4px solid #555; padding-right: 8px; }
 
+  /* ===== ABSENCE COLORS ===== */
+  .rec-item.abs-unx { border-color:#E53935 !important; border-right:6px solid #E53935 !important; background:#fdf1f1 !important; }
+  .rec-item.abs-ex  { border-color:#2E9E5B !important; border-right:6px solid #2E9E5B !important; background:#eefaf3 !important; }
+  .rec-type-badge.abs-unx { background:#E53935 !important; color:#fff !important; }
+  .rec-type-badge.abs-ex  { background:#2E9E5B !important; color:#fff !important; }
+
   /* ===== RESPONSIVE ===== */
   @media (max-width: 560px) {
     .form-row { grid-template-columns: 1fr; }
@@ -716,6 +722,11 @@
         <option value="4">کلاس ۴</option>
         <option value="5">کلاس ۵</option>
         <option value="6">کلاس ۶</option>
+      </select>
+      <select class="inp" id="sortSel" onchange="filterList()">
+        <option value="default">مرتب‌سازی: پایه و کلاس</option>
+        <option value="most">بیشترین سوابق</option>
+        <option value="least">کمترین سوابق</option>
       </select>
     </div>
 
@@ -1520,28 +1531,6 @@ async function loadStudents() {
 }
 
 // ============================================================
-// FILTER + RENDER LIST
-// ============================================================
-function filterList() {
-  const search = document.getElementById('searchInp').value.trim().toLowerCase();
-  const grade  = document.getElementById('gradeFilter').value;
-  const cls    = document.getElementById('classFilter').value;
-  let filtered = allStudents.filter(s => {
-    const name = (s.name+' '+s.family).toLowerCase();
-    return (!search || name.includes(search))
-        && (!grade  || s.grade === grade)
-        && (!cls    || s.class === cls);
-  });
-  filtered.sort((a,b) => {
-    const go = {اول:1,دوم:2,سوم:3};
-    if(go[a.grade]!==go[b.grade]) return go[a.grade]-go[b.grade];
-    if(+a.class !== +b.class) return +a.class - +b.class;
-    return a.family.localeCompare(b.family,'fa');
-  });
-  renderList(filtered);
-}
-
-// ============================================================
 // SELECTION MODE
 // ============================================================
 let selMode = false;
@@ -1589,16 +1578,20 @@ function updateCount() {
 }
 
 // ============================================================
-// FILTER + RENDER LIST
+// FILTER + SORT + RENDER LIST
 // ============================================================
+let sortMode = 'default';
+let filterToken = 0;
+
 function filterList() {
   const search = document.getElementById('searchInp').value.trim().toLowerCase();
   const grade  = document.getElementById('gradeFilter').value;
   const cls    = document.getElementById('classFilter').value;
+  sortMode     = document.getElementById('sortSel').value;
 
   const ORDER = {اول:1, دوم:2, سوم:3, چهارم:4, پنجم:5, ششم:6};
 
-  let filtered = allStudents.filter(s => {
+  const filtered = allStudents.filter(s => {
     const name = (s.name + ' ' + s.family).toLowerCase();
     return (!search || name.includes(search))
         && (!grade  || s.grade === grade)
@@ -1611,8 +1604,35 @@ function filterList() {
     return a.family.localeCompare(b.family, 'fa');
   });
 
-  lastFiltered = filtered;
-  renderList(filtered);
+  if (sortMode === 'default') {
+    lastFiltered = filtered;
+    renderList(filtered);
+    return;
+  }
+
+  // مرتب‌سازی بر اساس تعداد سوابق (نیازمند داده‌های شمارش)
+  const token = ++filterToken;
+  fetchDisciplineCounts().then(counts => {
+    if (token !== filterToken) return; // اگر فیلتر دوباره تغییر کرد، نتیجهٔ قدیمی را نشان نده
+    const dir = sortMode === 'most' ? -1 : 1;
+    filtered.sort((a, b) => {
+      const d = dir * (countForStudent(a, counts) - countForStudent(b, counts));
+      if (d !== 0) return d;
+      return a.family.localeCompare(b.family, 'fa');
+    });
+    lastFiltered = filtered;
+    renderList(filtered);
+  });
+}
+
+// کلید عددی تاریخ برای مرتب‌سازی درست (مستقل از صفر ابتدای ماه/روز و ارقام فارسی)
+function dateKey(d) {
+  const s = String(d == null ? '' : d)
+    .replace(/[\u06F0-\u06F9]/g, c => String(c.charCodeAt(0) - 0x06F0))
+    .replace(/[\u0660-\u0669]/g, c => String(c.charCodeAt(0) - 0x0660));
+  const p = s.match(/\d+/g);
+  if (!p || p.length < 3) return 0;
+  return (+p[0]) * 10000 + (+p[1]) * 100 + (+p[2]);
 }
 
 function accentForIndex(i) {
@@ -1626,23 +1646,29 @@ function renderList(students) {
     return;
   }
 
-  // گروه‌بندی پایه/کلاس
+  // گروه‌بندی پایه/کلاس (فقط در حالت پیش‌فرض)، در غیر این صورت لیست یکجا
   const groups = [];
-  const groupMap = {};
-  students.forEach(s => {
-    const gk = s.grade + '|' + s.class;
-    if (!groupMap[gk]) {
-      groupMap[gk] = [];
-      groups.push({ gk, label: 'پایه ' + s.grade + ' – کلاس ' + s.class, items: groupMap[gk] });
-    }
-    groupMap[gk].push(s);
-  });
+  if (sortMode !== 'default') {
+    groups.push({ label: null, items: students });
+  } else {
+    const groupMap = {};
+    students.forEach(s => {
+      const gk = s.grade + '|' + s.class;
+      if (!groupMap[gk]) {
+        groupMap[gk] = [];
+        groups.push({ gk, label: 'پایه ' + s.grade + ' – کلاس ' + s.class, items: groupMap[gk] });
+      }
+      groupMap[gk].push(s);
+    });
+  }
 
   let num = 0;
   let html = '';
   const countTargets = [];
   groups.forEach(g => {
-    html += `<div style="font-size:12px;font-weight:800;color:var(--sub);padding:8px 4px 4px;margin-top:6px;border-bottom:2px solid var(--gray100);letter-spacing:.3px;">📚 ${escHtml(g.label)}</div>`;
+    if (g.label) {
+      html += `<div style="font-size:12px;font-weight:800;color:var(--sub);padding:8px 4px 4px;margin-top:6px;border-bottom:2px solid var(--gray100);letter-spacing:.3px;">📚 ${escHtml(g.label)}</div>`;
+    }
     g.items.forEach(s => {
       num++;
       const key   = s.name + '|' + s.family;
@@ -1745,7 +1771,7 @@ async function buildGroupPrintContent() {
   // دریافت همهٔ سوابق با یک درخواست (به‌جای یک درخواست جدا برای هر دانش‌آموز) — سرعت چاپ گروهی چند برابر می‌شود
   const flat = await fetchAllRecords();
   const recordsPerStudent = chosen.map(s =>
-    recordsFor(s, flat).sort((a,b) => String(a.date||'').localeCompare(String(b.date||'')))
+    recordsFor(s, flat).sort((a,b) => dateKey(a.date) - dateKey(b.date))
   );
 
   let blocks = '';
@@ -1876,7 +1902,7 @@ async function loadRecords() {
     return;
   }
 
-  currentRecords = recordsFor(myStudent, flat).sort((a,b) => String(b.date||'').localeCompare(String(a.date||'')));
+  currentRecords = recordsFor(myStudent, flat).sort((a,b) => dateKey(b.date) - dateKey(a.date));
   renderRecords();
 }
 
@@ -1922,11 +1948,13 @@ function renderRecords() {
     // اقدام: اگر r.action معتبر باشه (نه addDisciplineRecord) استفاده کن
     const rawAct = (r.action && r.action !== 'addDisciplineRecord') ? r.action : parsed.act;
     const isAutoAbsence = r.source === 'حضور و غیاب';
-    return `<div class="rec-item">
+    // قرمز = غیبت غیرموجه ، سبز = غیبت موجه
+    const absCls = r.type === 'غیبت غیرموجه' ? 'abs-unx' : (r.type === 'غیبت موجه' ? 'abs-ex' : '');
+    return `<div class="rec-item ${absCls}">
       <div class="rec-dot" style="background:${bg}">${em}</div>
       <div class="rec-body">
         <div class="rec-head">
-          <span class="rec-type-badge" style="background:${bg};color:${cl}">${r.type}</span>
+          <span class="rec-type-badge ${absCls}" style="background:${bg};color:${cl}">${r.type}</span>
           <span class="rec-date">📅 ${toFa(r.date||'')} &nbsp; ${getPersianDay(r.date)}</span>
           ${isAutoAbsence ? `<span class="rec-source-tag">⚙️ خودکار از حضور و غیاب</span>` : ''}
         </div>
